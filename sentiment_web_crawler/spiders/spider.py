@@ -4,6 +4,9 @@ from scrapy.crawler import CrawlerProcess
 
 from nltk.tokenize import word_tokenize
 
+import string
+import re
+
 
 class ConcordiaSpider(CrawlSpider):
     """
@@ -41,7 +44,7 @@ class ConcordiaSpider(CrawlSpider):
             content.extend(word_tokenize(text))
 
         # also making sure to remove strings that are only punctuation
-        content = [word.lower() for word in content if word.isalpha()]
+        content = [word.casefold() for word in content if not re.fullmatch("[" + string.punctuation + "]+", word)]
 
         yield {
             "url": url,
