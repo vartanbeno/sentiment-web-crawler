@@ -26,7 +26,7 @@ class ConcordiaSpider(CrawlSpider):
         "https://www.concordia.ca/about.html"
     ]
     rules = (
-        Rule(LinkExtractor(), callback="parse_item", follow=True),
+        Rule(LinkExtractor(deny=[".*twitter.*"]), callback="parse_item", follow=True),
     )
 
     # xpath expression which will be used to get relevant tags' text content in page's body
