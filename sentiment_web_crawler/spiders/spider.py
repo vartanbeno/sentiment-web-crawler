@@ -2,6 +2,8 @@ from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 from scrapy.crawler import CrawlerProcess
 
+from nltk.tokenize import word_tokenize
+
 
 class ConcordiaSpider(CrawlSpider):
     """
@@ -18,10 +20,32 @@ class ConcordiaSpider(CrawlSpider):
         Rule(LinkExtractor(), callback="parse_item", follow=True),
     )
 
+    # xpath expression which will be used to get relevant tags' text content in page's body
+    tags = "//body//*[" \
+           "self::header | " \
+           "self::h1 | self::h2 | self::h3 | self::h4 | self::h5 | self::h6 | " \
+           "self::p | self::span | " \
+           "self::footer" \
+           "]//text()"
+
     def parse_item(self, response):
         self.logger.info("Currently scraping: {}".format(response.url))
+
+        url = response.url
+        content = []
+
+        title = response.xpath("//title//text()").extract_first()
+        content.extend(word_tokenize(title))
+
+        for text in response.xpath(self.tags).extract():
+            content.extend(word_tokenize(text))
+
+        # also making sure to remove strings that are only punctuation
+        content = [word.lower() for word in content if word.isalpha()]
+
         yield {
-            "url": response.url
+            "url": url,
+            "content": content
         }
 
     @staticmethod

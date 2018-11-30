@@ -10,7 +10,7 @@ def delete_results():
 
 
 parser = argparse.ArgumentParser(description="Configure Reuters parser and set document limit per block.")
-parser.add_argument("-l", "--limit", type=int, help="max number of pages crawled", default=10)
+parser.add_argument("-l", "--limit", type=int, help="max number of pages to crawl", default=10)
 args = parser.parse_args()
 
 if __name__ == '__main__':
