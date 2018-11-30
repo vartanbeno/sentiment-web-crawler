@@ -15,10 +15,10 @@ def delete_results():
 
 def get_results():
     if os.path.exists(output_file):
-        return "{}/{}".format(os.getcwd(), output_file)
+        return os.path.join(os.getcwd(), output_file)
 
 
-parser = argparse.ArgumentParser(description="Configure Reuters parser and set document limit per block.")
+parser = argparse.ArgumentParser(description="Configure crawler and set max number of pages it should crawl.")
 parser.add_argument("-l", "--limit", type=int, help="max number of pages to crawl", default=10)
 args = parser.parse_args()
 
@@ -31,7 +31,7 @@ if __name__ == '__main__':
     """
     
     delete_results()
-    ConcordiaSpider.run(args.limit)
+    ConcordiaSpider.crawl(args.limit)
     
     i = Index(output_file)
     i.construct_index()

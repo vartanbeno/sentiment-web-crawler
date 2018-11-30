@@ -78,6 +78,18 @@ class ConcordiaSpider(CrawlSpider):
 
     @staticmethod
     def get_process():
+        """
+        Here, we define a CrawlerProcess, which will help us run the spider from a Python script, instead of using the
+        'scrapy' command in the command line.
+        More info: https://doc.scrapy.org/en/latest/topics/practices.html#run-scrapy-from-a-script
+
+        The ROBOTSTXT_OBEY set to True prevents us from scraping links that are in a website's robots.txt file.
+
+        Some of the code taken from:
+        https://stackoverflow.com/questions/23574636/scrapy-from-script-output-in-json
+
+        :return: CrawlerProcess object
+        """
         return CrawlerProcess({
             "USER_AGENT": "Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/42.0",
             "ROBOTSTXT_OBEY": True,
@@ -87,21 +99,12 @@ class ConcordiaSpider(CrawlSpider):
         })
 
     @staticmethod
-    def run(limit):
+    def crawl(limit):
         """
-        Here, we define a CrawlerProcess, which will help us run the spider from a Python script, instead of using the
-        'scrapy' command in the command line.
-        More info: https://doc.scrapy.org/en/latest/topics/practices.html#run-scrapy-from-a-script
-
-        In the CrawlerProcess, we can define a CLOSESPIDER_ITEMCOUNT condition, which closes the spider once x number of
+        In the CrawlerProcess, we define a new CLOSESPIDER_ITEMCOUNT condition, which closes the spider once x number of
         links have been scraped. This is useful for setting an upper bound on the number of links to visit.
 
-        The ROBOTSTXT_OBEY set to True prevents us from scraping links that are in a website's robots.txt file.
-
-        Some of the code taken from:
-        https://stackoverflow.com/questions/23574636/scrapy-from-script-output-in-json
-
-        :param limit: number of pages to be crawled
+        :param limit: max number of pages to be crawled
         :return: None
         """
         process = ConcordiaSpider.get_process()
