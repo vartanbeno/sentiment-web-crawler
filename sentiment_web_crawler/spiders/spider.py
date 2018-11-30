@@ -3,9 +3,15 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy.crawler import CrawlerProcess
 
 from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
 
 import string
 import re
+
+
+stopwords = set(stopwords.words("english"))
+ps = PorterStemmer()
 
 
 class ConcordiaSpider(CrawlSpider):
@@ -54,8 +60,10 @@ class ConcordiaSpider(CrawlSpider):
         for text in response.xpath(self.tags).extract():
             content.extend(word_tokenize(text))
 
-        # also making sure to remove strings that are only punctuation
-        content = [word.casefold() for word in content if not re.fullmatch("[" + string.punctuation + "]+", word)]
+        # also making sure to remove strings that are only punctuation, and words that are just stopwords
+        content = [word.casefold() for word in content]
+        content = [ps.stem(word) for word in content
+                   if not re.fullmatch("[" + string.punctuation + "]+", word) and word not in stopwords]
 
         yield {
             "url": url,
