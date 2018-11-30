@@ -4,6 +4,8 @@ This is a web crawler developed for the final project of the fall 2018 COMP 479 
 
 The start URL is the [about page](https://www.concordia.ca/about.html) of the Concordia University website.
 
+AFINN words can be downloaded [here](http://www2.imm.dtu.dk/pubdb/views/publication_details.php?id=6010). You can experiment with real-time sentiment analysis of words [here](https://darenr.github.io/afinn/).
+
 ## Getting Started
 
 ### Prerequisites
@@ -20,19 +22,14 @@ Click [here](requirements.txt) for the specific versions of the packages used fo
 
 A Dockerfile is included to make the script easier to run on any machine. First, make sure you `cd` into this repository.
 
-To build the image:
+To build the image and start up a container:
 
 ```
 docker image build -t crawler .
-```
-
-To run the container:
-
-```
 docker container run -it --name crawler-demo crawler bash
 ```
 
-This will take you to an interactive Bash terminal, from which you can [run](#running) the script.
+This will take you to an interactive Bash terminal, from which you can [run](#running) the script. You can include the `--rm` option in the `run` command to automatically remove the container when you exit out of it.
 
 ### Running
 
