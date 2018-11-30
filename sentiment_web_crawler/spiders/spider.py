@@ -32,6 +32,14 @@ class ConcordiaSpider(CrawlSpider):
            "]//text()"
 
     def parse_item(self, response):
+        """
+        This method parses the response object.
+        From the response, we get stuff like the page's title and the content of its body.
+        It gets written to the results.json file.
+
+        :param response: response containing the web page's information.
+        :return: None
+        """
         self.logger.info("Currently scraping: {}".format(response.url))
 
         url = response.url
@@ -51,6 +59,12 @@ class ConcordiaSpider(CrawlSpider):
             "content": content
         }
 
+    # TODO not sure if we should keep this
+    """
+    Override the default parse_start_url method, in order to parse the start_url's contents as well.
+    """
+    parse_start_url = parse_item
+
     @staticmethod
     def run(limit):
         """
@@ -66,6 +80,7 @@ class ConcordiaSpider(CrawlSpider):
         Some of the code taken from:
         https://stackoverflow.com/questions/23574636/scrapy-from-script-output-in-json
 
+        :param limit: number of pages to be crawled
         :return: None
         """
         process = CrawlerProcess({
@@ -73,7 +88,8 @@ class ConcordiaSpider(CrawlSpider):
             "ROBOTSTXT_OBEY": True,
             "CLOSESPIDER_ITEMCOUNT": limit,
             "FEED_FORMAT": "json",
-            "FEED_URI": "results.json"
+            "FEED_URI": "results.json",
+            "CONCURRENT_REQUESTS": 1
         })
 
         process.crawl(ConcordiaSpider)
