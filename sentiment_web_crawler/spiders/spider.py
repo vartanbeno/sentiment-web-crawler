@@ -24,12 +24,15 @@ class ConcordiaSpider(CrawlSpider):
     )
 
     # xpath expression which will be used to get relevant tags' text content in page's body
+    # exclude script/style tags, they're of no interest to the user
     tags = "//body//*[" \
            "self::header | " \
            "self::h1 | self::h2 | self::h3 | self::h4 | self::h5 | self::h6 | " \
            "self::p | self::span | " \
            "self::footer" \
-           "]//text()"
+           "]//text()[" \
+           "not(parent::script | parent::style)" \
+           "]"
 
     def parse_item(self, response):
         """
@@ -66,6 +69,16 @@ class ConcordiaSpider(CrawlSpider):
     parse_start_url = parse_item
 
     @staticmethod
+    def get_process():
+        return CrawlerProcess({
+            "USER_AGENT": "Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/42.0",
+            "ROBOTSTXT_OBEY": True,
+            "FEED_FORMAT": "json",
+            "FEED_URI": "results.json",
+            "CONCURRENT_REQUESTS": 1
+        })
+
+    @staticmethod
     def run(limit):
         """
         Here, we define a CrawlerProcess, which will help us run the spider from a Python script, instead of using the
@@ -83,14 +96,8 @@ class ConcordiaSpider(CrawlSpider):
         :param limit: number of pages to be crawled
         :return: None
         """
-        process = CrawlerProcess({
-            "USER_AGENT": "Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/42.0",
-            "ROBOTSTXT_OBEY": True,
-            "CLOSESPIDER_ITEMCOUNT": limit,
-            "FEED_FORMAT": "json",
-            "FEED_URI": "results.json",
-            "CONCURRENT_REQUESTS": 1
-        })
+        process = ConcordiaSpider.get_process()
+        process.settings.set("CLOSESPIDER_ITEMCOUNT", limit)
 
         process.crawl(ConcordiaSpider)
         process.start()
