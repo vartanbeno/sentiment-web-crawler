@@ -73,4 +73,25 @@ class Index:
             return a.score(text)
         elif type(text) is list:
             return a.score(" ".join(text))
-        raise TypeError("Must pass in either a string of a list. Can't pass in a {}.".format(type(text)))
+        raise TypeError("Must pass in either a string or a list. Can't pass in a {}.".format(type(text)))
+
+    def get_inverted_index(self):
+        """
+        Get the inverted index generated with the above methods.
+        Basically parses the index.txt file and returns a dictionary object.
+        :return: the inverted index
+        """
+        inverted_index = {}
+
+        with open(self.index_file) as file:
+
+            for line in file.readlines():
+
+                elements = line.split()
+                inverted_index[elements[0]] = {}
+                inverted_index[elements[0]]['sentiment'] = elements[1]
+
+                for i in range(2, len(elements), 2):
+                    inverted_index[elements[0]][elements[i]] = elements[i+1]
+
+        return inverted_index
