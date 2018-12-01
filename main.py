@@ -1,5 +1,6 @@
 from sentiment_web_crawler.spiders.spider import ConcordiaSpider
 from sentiment_web_crawler.index import Index
+from sentiment_web_crawler.query import Query
 
 import os
 import argparse
@@ -41,3 +42,17 @@ if __name__ == '__main__':
     i.construct_index()
     
     index = i.get_inverted_index()
+
+    query = Query(index)
+    choices = {"y": True, "n": False}
+    while True:
+        user_input = input("Would you like to conduct a query? [y/n] ")
+        try:
+            if choices[user_input.lower()]:
+                user_query = query.ask_user()
+                query.execute(user_query)
+                query.print_results()
+            else:
+                break
+        except KeyError:
+            pass
