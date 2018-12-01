@@ -11,7 +11,6 @@ class Index:
         """
         self.file_to_parse = file_to_parse
         self.index_file = "index.txt"
-        self.links = []
 
     def construct_index(self):
         """
@@ -24,14 +23,12 @@ class Index:
              (so far); if it is, increment it by 1.
         :return: None
         """
-        print("\nCreating index...")
         with open(self.file_to_parse) as file_to_parse:
             index = {}
             pages = json.load(file_to_parse)
 
             for page in pages:
                 url = page["url"]
-                self.links.append(url)
                 terms = page["content"]
 
                 for term in terms:
@@ -42,7 +39,6 @@ class Index:
                     else:
                         index[term][url] += 1
 
-        print("\nThe following pages were scraped:\n{}".format("\n".join(self.links)))
         print("\nIndex created. There's a total of {} distinct terms.".format(len(index)))
 
         self.write_to_file(index)

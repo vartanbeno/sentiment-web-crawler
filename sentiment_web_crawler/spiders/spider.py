@@ -28,6 +28,8 @@ class ConcordiaSpider(CrawlSpider):
            "not(parent::script | parent::style)" \
            "]"
 
+    scraped_links = []
+
     def parse_item(self, response):
         """
         This method parses the response object.
@@ -40,6 +42,8 @@ class ConcordiaSpider(CrawlSpider):
         self.logger.info("Currently scraping: {}".format(response.url))
 
         url = response.url
+        self.scraped_links.append(url)
+
         content = []
 
         title = response.xpath("//title//text()").extract_first()
@@ -79,8 +83,7 @@ class ConcordiaSpider(CrawlSpider):
             "CONCURRENT_REQUESTS": 1
         })
 
-    @staticmethod
-    def crawl(start_url="https://www.concordia.ca/about.html", obey_robots=True, limit=10):
+    def crawl(self, start_url="https://www.concordia.ca/about.html", obey_robots=True, limit=10):
         """
         First, we define the start URL of the crawler by appending it to its start_urls attribute, which is currently
         just an empty list.
@@ -104,3 +107,5 @@ class ConcordiaSpider(CrawlSpider):
 
         process.crawl(ConcordiaSpider)
         process.start()
+
+        print("\n{} pages were scraped:\n{}".format(len(self.scraped_links), "\n".join(self.scraped_links)))

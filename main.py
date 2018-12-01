@@ -36,7 +36,9 @@ if __name__ == '__main__':
     """
     
     delete_results()
-    ConcordiaSpider.crawl(start_url=args.start_url, obey_robots=not args.ignore_robots, limit=args.limit)
+
+    spider = ConcordiaSpider()
+    spider.crawl(start_url=args.start_url, obey_robots=not args.ignore_robots, limit=args.limit)
     
     i = Index(output_file)
     i.construct_index()
