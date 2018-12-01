@@ -13,9 +13,6 @@ class ConcordiaSpider(CrawlSpider):
     This means the crawler will go from one link, to another from that one, to another from that one, etc.
     """
     name = "ir"
-    start_urls = [
-        "https://www.concordia.ca/about.html"
-    ]
     rules = (
         Rule(LinkExtractor(deny=[".*twitter.*", ".*/fr/.*"]), callback="parse_item", follow=True),
     )
@@ -69,8 +66,6 @@ class ConcordiaSpider(CrawlSpider):
         'scrapy' command in the command line.
         More info: https://doc.scrapy.org/en/latest/topics/practices.html#run-scrapy-from-a-script
 
-        The ROBOTSTXT_OBEY set to True prevents us from scraping links that are in a website's robots.txt file.
-
         Some of the code taken from:
         https://stackoverflow.com/questions/23574636/scrapy-from-script-output-in-json
 
@@ -85,15 +80,26 @@ class ConcordiaSpider(CrawlSpider):
         })
 
     @staticmethod
-    def crawl(limit):
+    def crawl(start_url="https://www.concordia.ca/about.html", obey_robots=True, limit=10):
         """
-        In the CrawlerProcess, we define a new CLOSESPIDER_ITEMCOUNT condition, which closes the spider once x number of
-        links have been scraped. This is useful for setting an upper bound on the number of links to visit.
+        First, we define the start URL of the crawler by appending it to its start_urls attribute, which is currently
+        just an empty list.
 
+        In the CrawlerProcess, we define a new ROBOTSTXT_OBEY condition, which specifies whether or not we want to
+        respect websites' robots.txt file.
+
+        The CLOSESPIDER_ITEMCOUNT condition closes the spider once x number of links have been scraped. This is useful
+        for setting an upper bound on the number of links to visit.
+
+        :param start_url: URL the crawler will start scraping links from
+        :param obey_robots: whether or not the crawler will obey websites' robots.txt
         :param limit: max number of pages to be crawled
         :return: None
         """
+        ConcordiaSpider.start_urls = [start_url]
+
         process = ConcordiaSpider.get_process()
+        process.settings.set("ROBOTSTXT_OBEY", obey_robots)
         process.settings.set("CLOSESPIDER_ITEMCOUNT", limit)
 
         process.crawl(ConcordiaSpider)

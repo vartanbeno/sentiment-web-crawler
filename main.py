@@ -19,7 +19,11 @@ def get_results():
 
 
 parser = argparse.ArgumentParser(description="Configure crawler and set max number of pages it should crawl.")
+
+parser.add_argument("-url", "--start-url", type=str, help="page where we start crawling for links", default="https://www.concordia.ca/about.html")
+parser.add_argument("-ign", "--ignore-robots", action="store_true", help="ignore websites' robots.txt", default=False)
 parser.add_argument("-l", "--limit", type=int, help="max number of pages to crawl", default=10)
+
 args = parser.parse_args()
 
 if __name__ == '__main__':
@@ -31,7 +35,7 @@ if __name__ == '__main__':
     """
     
     delete_results()
-    ConcordiaSpider.crawl(args.limit)
+    ConcordiaSpider.crawl(start_url=args.start_url, obey_robots=not args.ignore_robots, limit=args.limit)
     
     i = Index(output_file)
     i.construct_index()

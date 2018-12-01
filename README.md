@@ -36,12 +36,16 @@ This will take you to an interactive Bash terminal, from which you can [run](#ru
 The file to run is in the root directory of the project.
 
 ```
-python main.py [-l LIMIT]
+python main.py [-url "START_URL"]
+               [-ign]
+               [-l LIMIT]
 ```
 
 The arguments are the following:
 
-1. `-l` or `--limit`: maximum number of links to scrape. Default is 10.
+1. `-url` or `--start-url`: URL the crawler will begin scraping links from. Surround it with quotes in the command line for best results.
+2. `-ign` or `--ignore-robots`: websites' robots.txt will be ignored. Default is false.
+3. `-l` or `--limit`: maximum number of links to scrape. Default is 10.
 
 ## Authors
 

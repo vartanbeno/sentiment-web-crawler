@@ -90,10 +90,10 @@ class Index:
                 elements = line.split()
 
                 inverted_index[elements[0]] = {}
-                inverted_index[elements[0]]["sentiment"] = elements[1]
+                inverted_index[elements[0]]["sentiment"] = float(elements[1])
                 inverted_index[elements[0]]["pages"] = {}
 
                 for i in range(2, len(elements), 2):
-                    inverted_index[elements[0]]["pages"][elements[i]] = elements[i+1]
+                    inverted_index[elements[0]]["pages"][elements[i]] = int(elements[i+1])
 
         return inverted_index
