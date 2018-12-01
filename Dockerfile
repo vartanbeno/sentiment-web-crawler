@@ -9,3 +9,5 @@ RUN echo "alias ..='cd ..'" >> ~/.bashrc && \
 
 RUN python -m nltk.downloader punkt && \
     python -m nltk.downloader stopwords
+
+WORKDIR /usr/src/app/src
