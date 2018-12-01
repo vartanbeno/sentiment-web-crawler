@@ -3,9 +3,7 @@
 
 # Allow files and directories
 !/requirements.txt
-!/main.py
-!/scrapy.cfg
-!/sentiment_web_crawler/**
+!/src/**
 
 # Ignore unnecessary files inside allowed directories
 # This should go after the allowed directories

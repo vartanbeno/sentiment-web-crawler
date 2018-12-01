@@ -1,4 +1,4 @@
-from sentiment_web_crawler.helpers import clean_terms
+from helpers import clean_terms
 
 
 class Query:

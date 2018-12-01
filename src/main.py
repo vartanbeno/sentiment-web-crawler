@@ -1,6 +1,6 @@
-from sentiment_web_crawler.spiders.spider import ConcordiaSpider
-from sentiment_web_crawler.index import Index
-from sentiment_web_crawler.query import Query
+from classes.spider import ConcordiaSpider
+from classes.index import Index
+from classes.query import Query
 
 import os
 import argparse

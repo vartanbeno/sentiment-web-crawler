@@ -2,7 +2,7 @@ from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 from scrapy.crawler import CrawlerProcess
 
-from sentiment_web_crawler.helpers import clean_terms
+from helpers import clean_terms
 
 
 class ConcordiaSpider(CrawlSpider):
@@ -14,7 +14,8 @@ class ConcordiaSpider(CrawlSpider):
     """
     name = "ir"
     rules = (
-        Rule(LinkExtractor(deny=[".*twitter.*", ".*/fr/.*"]), callback="parse_item", follow=True),
+        Rule(LinkExtractor(deny_domains=["facebook.com", "twitter.com"], deny=[".*/fr/.*"]),
+             callback="parse_item", follow=True),
     )
 
     # xpath expression which will be used to get relevant tags' text content in page's body

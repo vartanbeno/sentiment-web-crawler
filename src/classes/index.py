@@ -40,7 +40,6 @@ class Index:
                         index[term][url] += 1
 
         print("\nIndex created. There's a total of {} distinct terms.".format(len(index)))
-
         self.write_to_file(index)
 
     def write_to_file(self, index):
