@@ -1,4 +1,4 @@
-from helpers import clean_terms
+from helpers import clean_terms, afinn
 
 
 class Query:
@@ -64,6 +64,7 @@ class Query:
         Print out terms in the query, and the postings found.
         :return: None
         """
+        print("You searched for: {}\nSentiment value: {}".format(self.original_terms, afinn.score(self.original_terms)))
         if self.results:
             print("{} page(s) found:\n{}\n".format("{:,}".format(len(self.results)), "\n".join(map(str, self.results))))
         else:

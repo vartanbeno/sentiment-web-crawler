@@ -1,4 +1,5 @@
-from afinn import Afinn
+from helpers import afinn
+
 import json
 
 
@@ -53,26 +54,12 @@ class Index:
         with open(self.index_file, "w", encoding="utf-8") as index_file:
             for term in sorted(index):
                 try:
-                    index_file.write("{} {}".format(term, self.get_sentiment_value(term)))
+                    index_file.write("{} {}".format(term, afinn.score(term)))
                     for url, frequency in index[term].items():
                         index_file.write(" {} {}".format(url, frequency))
                     index_file.write("\n")
                 except UnicodeEncodeError:
                     pass
-
-    @staticmethod
-    def get_sentiment_value(text):
-        """
-        If the text is a list of strings, we join it to form a single string.
-        :param text: text that we want the sentiment value of
-        :return: sentiment value of text
-        """
-        a = Afinn()
-        if type(text) is str:
-            return a.score(text)
-        elif type(text) is list:
-            return a.score(" ".join(text))
-        raise TypeError("Must pass in either a string or a list. Can't pass in a {}.".format(type(text)))
 
     def get_inverted_index(self):
         """

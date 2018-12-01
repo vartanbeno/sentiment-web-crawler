@@ -4,11 +4,13 @@ import re
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
+from afinn import Afinn
 
 
 word_tokenize = word_tokenize
 stopwords = set(stopwords.words("english"))
 ps = PorterStemmer()
+afinn = Afinn()
 
 
 def clean_terms(text):

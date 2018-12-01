@@ -58,10 +58,6 @@ class ConcordiaSpider(CrawlSpider):
             "content": content
         }
 
-    # TODO not sure if we should keep this
-    """
-    Override the default parse_start_url method, in order to parse the start_url's contents as well.
-    """
     parse_start_url = parse_item
 
     @staticmethod
@@ -78,7 +74,6 @@ class ConcordiaSpider(CrawlSpider):
         """
         return CrawlerProcess({
             "USER_AGENT": "Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/42.0",
-            "ROBOTSTXT_OBEY": True,
             "FEED_FORMAT": "json",
             "FEED_URI": "results.json",
             "CONCURRENT_REQUESTS": 1
