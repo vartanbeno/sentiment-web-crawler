@@ -1,5 +1,6 @@
 from classes.spider import ConcordiaSpider
 from classes.index_builder import IndexBuilder
+from classes.document_parser import DocumentParser
 from classes.query import Query
 
 import os
@@ -37,6 +38,9 @@ if __name__ == '__main__':
     
     builder = IndexBuilder(output_file)
     builder.construct_index()
+
+    document_parser = DocumentParser(output_file)
+    document_parser.write_to_file()
     
     index = builder.get_index()
 
