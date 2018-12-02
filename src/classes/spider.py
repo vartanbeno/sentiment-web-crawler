@@ -14,8 +14,9 @@ class ConcordiaSpider(CrawlSpider):
     """
     name = "ir"
     rules = (
-        Rule(LinkExtractor(deny_domains=["facebook.com", "twitter.com"], deny=[".*/fr/.*"]),
-             callback="parse_item", follow=True),
+        Rule(LinkExtractor(deny_domains=[
+            "facebook.com", "twitter.com", "youtube.com", "google.com", "stm.info", "apple.com"
+        ], deny=[".*/fr/.*", ".*concordia.ca/maps/.*"]), callback="parse_item", follow=True),
     )
 
     # xpath expression which will be used to get relevant tags' text content in page's body
