@@ -1,5 +1,5 @@
 from classes.spider import ConcordiaSpider
-from classes.index import Index
+from classes.index_builder import IndexBuilder
 from classes.query import Query
 
 import os
@@ -12,11 +12,6 @@ output_file = ConcordiaSpider.get_process().settings.get("FEED_URI")
 def delete_results():
     if os.path.exists(output_file):
         os.remove(output_file)
-
-
-def get_results():
-    if os.path.exists(output_file):
-        return os.path.join(os.getcwd(), output_file)
 
 
 parser = argparse.ArgumentParser(description="Configure crawler and set max number of pages it should crawl.")
@@ -40,10 +35,10 @@ if __name__ == '__main__':
     spider = ConcordiaSpider()
     spider.crawl(start_url=args.start_url, obey_robots=not args.ignore_robots, limit=args.limit)
     
-    i = Index(output_file)
-    i.construct_index()
+    builder = IndexBuilder(output_file)
+    builder.construct_index()
     
-    index = i.get_inverted_index()
+    index = builder.get_index()
 
     query = Query(index)
     choices = {"y": True, "n": False}

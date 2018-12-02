@@ -1,4 +1,4 @@
-from helpers import clean_terms, afinn
+from helpers import clean_terms, afinn, pages
 
 
 class Query:
@@ -38,7 +38,7 @@ class Query:
 
         for term in self.terms:
             try:
-                results[term] = self.index[term]["pages"]
+                results[term] = self.index[term][pages]
             except KeyError:
                 results[term] = []
 

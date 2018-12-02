@@ -21,3 +21,7 @@ def clean_terms(text):
     terms = word_tokenize(text)
     terms = [term.casefold() for term in terms]
     return [term for term in terms if not re.fullmatch("[" + string.punctuation + "]+", term)]
+
+
+sentiment = "sentiment"
+pages = "pages"

@@ -1,9 +1,9 @@
-from helpers import afinn
+from helpers import afinn, sentiment, pages
 
 import json
 
 
-class Index:
+class IndexBuilder:
 
     def __init__(self, file_to_parse):
         """
@@ -12,6 +12,7 @@ class Index:
         """
         self.file_to_parse = file_to_parse
         self.index_file = "index.txt"
+        self.index = {}
 
     def construct_index(self):
         """
@@ -25,23 +26,24 @@ class Index:
         :return: None
         """
         with open(self.file_to_parse) as file_to_parse:
-            index = {}
-            pages = json.load(file_to_parse)
+            results = json.load(file_to_parse)
 
-            for page in pages:
-                url = page["url"]
-                terms = page["content"]
+            for result in results:
+                url = result["url"]
+                terms = result["content"]
 
                 for term in terms:
-                    if term not in index:
-                        index[term] = {}
-                    if url not in index[term]:
-                        index[term][url] = 1
+                    if term not in self.index:
+                        self.index[term] = {}
+                        self.index[term][sentiment] = afinn.score(term)
+                        self.index[term][pages] = {}
+                    if url not in self.index[term][pages]:
+                        self.index[term][pages][url] = 1
                     else:
-                        index[term][url] += 1
+                        self.index[term][pages][url] += 1
 
-        print("\nIndex created. There's a total of {} distinct terms.".format(len(index)))
-        self.write_to_file(index)
+        print("\nIndex created. There's a total of {} distinct terms.".format(len(self.index)))
+        self.write_to_file(self.index)
 
     def write_to_file(self, index):
         """
@@ -54,32 +56,16 @@ class Index:
         with open(self.index_file, "w", encoding="utf-8") as index_file:
             for term in sorted(index):
                 try:
-                    index_file.write("{} {}".format(term, afinn.score(term)))
-                    for url, frequency in index[term].items():
+                    index_file.write("{} {}".format(term, index[term][sentiment]))
+                    for url, frequency in index[term][pages].items():
                         index_file.write(" {} {}".format(url, frequency))
                     index_file.write("\n")
                 except UnicodeEncodeError:
                     pass
 
-    def get_inverted_index(self):
+    def get_index(self):
         """
         Get the inverted index generated with the above methods.
-        Basically parses the index.txt file and returns a dictionary object.
         :return: the inverted index
         """
-        inverted_index = {}
-
-        with open(self.index_file) as file:
-
-            for line in file.readlines():
-
-                elements = line.split()
-
-                inverted_index[elements[0]] = {}
-                inverted_index[elements[0]]["sentiment"] = float(elements[1])
-                inverted_index[elements[0]]["pages"] = {}
-
-                for i in range(2, len(elements), 2):
-                    inverted_index[elements[0]]["pages"][elements[i]] = int(elements[i+1])
-
-        return inverted_index
+        return self.index
