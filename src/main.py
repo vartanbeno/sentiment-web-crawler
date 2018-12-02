@@ -40,9 +40,10 @@ if __name__ == '__main__':
     builder.construct_index()
 
     document_parser = DocumentParser(output_file)
-    document_parser.write_to_file()
-    
+    document_parser.construct_stats()
+
     index = builder.get_index()
+    stats = document_parser.get_stats()
 
     query = Query(index)
     choices = {"y": True, "n": False}

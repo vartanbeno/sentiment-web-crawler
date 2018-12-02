@@ -2,8 +2,6 @@
 
 This is a web crawler developed for the final project of the fall 2018 COMP 479 - Information Retrieval course in Concordia University. The goal of the project is to experiment with web crawling, while scraping and indexing web documents and associating sentiment values to the index (using Afinn).
 
-The start URL is the [about page](https://www.concordia.ca/about.html) of the Concordia University website.
-
 AFINN words can be downloaded [here](http://www2.imm.dtu.dk/pubdb/views/publication_details.php?id=6010). You can experiment with real-time sentiment analysis of words [here](https://darenr.github.io/afinn/).
 
 ## Getting Started
@@ -43,7 +41,7 @@ python main.py [-url "START_URL"]
 
 The arguments are the following:
 
-1. `-url` or `--start-url`: URL the crawler will begin scraping links from. Surround it with quotes in the command line for best results.
+1. `-url` or `--start-url`: URL the crawler will begin scraping links from. Surround it with quotes in the command line for best results. Default is the [about page](https://www.concordia.ca/about.html) of the Concordia University website.
 2. `-ign` or `--ignore-robots`: websites' robots.txt will be ignored. Default is false.
 3. `-l` or `--limit`: maximum number of links to scrape. Default is 10.
 

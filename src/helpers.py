@@ -25,3 +25,9 @@ def clean_terms(text):
 
 sentiment = "sentiment"
 pages = "pages"
+url = "url"
+content = "content"
+totals = "totals"
+total_tokens = "total_tokens"
+total_afinn = "total_afinn"
+avg_afinn = "avg_afinn"

@@ -104,4 +104,4 @@ class ConcordiaSpider(CrawlSpider):
         process.crawl(ConcordiaSpider)
         process.start()
 
-        print("\n{} pages scraped:\n{}".format(len(self.scraped_links), "\n".join(self.scraped_links)))
+        print("\n{} page(s) scraped:\n{}".format(len(self.scraped_links), "\n".join(self.scraped_links)))
