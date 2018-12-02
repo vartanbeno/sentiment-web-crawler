@@ -45,7 +45,7 @@ class TFIDF:
         :return: number of times the term appears in the web page
         """
         try:
-            return self.index[term][pages][url]
+            return self.index[term][pages][url]["tf"]
         except KeyError:
             return 0
 
@@ -57,7 +57,6 @@ class TFIDF:
         """
         dft = self.get_document_frequency(term)
         try:
-            print("{} / {}".format(self.N, dft))
             return log10(self.N / dft)
         except ZeroDivisionError:
             return 0

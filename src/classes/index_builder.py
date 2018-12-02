@@ -1,18 +1,25 @@
 from helpers import afinn, sentiment, pages
+from classes.tf_idf import TFIDF
 
 import json
 
 
 class IndexBuilder:
 
-    def __init__(self, file_to_parse):
+    def __init__(self, file_to_parse, stats):
         """
         Initialize the index builder with the file containing the pages and their content.
+        Also pass in a list of stats, which will be used, in conjunction with the index, to compute the tf-idf of terms.
         :param file_to_parse: file with the crawler's output
+        :param stats: stats of web pages, such as number of total terms, Afinn score, etc.
         """
         self.file_to_parse = file_to_parse
+        self.stats = stats
+
         self.index_file = "index.txt"
         self.index = {}
+
+        self.tfidf = TFIDF(self.index, self.stats)
 
     def construct_index(self):
         """
@@ -38,11 +45,17 @@ class IndexBuilder:
                         self.index[term][sentiment] = afinn.score(term)
                         self.index[term][pages] = {}
                     if url not in self.index[term][pages]:
-                        self.index[term][pages][url] = 1
+                        self.index[term][pages][url] = {}
+                        self.index[term][pages][url]["tf"] = 1
                     else:
-                        self.index[term][pages][url] += 1
+                        self.index[term][pages][url]["tf"] += 1
 
-        print("\nIndex created. There's a total of {} distinct terms.".format(len(self.index)))
+            for term in self.index:
+                term_urls = list(self.index[term][pages])
+                for url in term_urls:
+                    self.index[term][pages][url]["tf-idf"] = self.tfidf.tf_idf(term, url)
+
+        print("Index created. There's a total of {} distinct terms.".format(len(self.index)))
         self.write_to_file(self.index)
 
     def write_to_file(self, index):
@@ -57,8 +70,8 @@ class IndexBuilder:
             for term in sorted(index):
                 try:
                     index_file.write("{} {}".format(term, index[term][sentiment]))
-                    for url, frequency in index[term][pages].items():
-                        index_file.write(" {} {}".format(url, frequency))
+                    for url, stats in index[term][pages].items():
+                        index_file.write(" {} {} {}".format(url, stats["tf"], stats["tf-idf"]))
                     index_file.write("\n")
                 except UnicodeEncodeError:
                     pass

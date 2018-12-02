@@ -14,9 +14,12 @@ class ConcordiaSpider(CrawlSpider):
     """
     name = "ir"
     rules = (
-        Rule(LinkExtractor(deny_domains=[
-            "facebook.com", "twitter.com", "youtube.com", "google.com", "stm.info", "apple.com"
-        ], deny=[".*/fr/.*", ".*concordia.ca/maps/.*"]), callback="parse_item", follow=True),
+        Rule(LinkExtractor(
+            deny_domains=["facebook.com", "twitter.com", "youtube.com", "google.com", "stm.info", "apple.com"],
+            deny=[".*/fr/.*", ".*concordia.ca/maps/.*"]),
+            callback="parse_item",
+            follow=True
+        ),
     )
 
     # xpath expression which will be used to get relevant tags' text content in page's body
@@ -105,4 +108,4 @@ class ConcordiaSpider(CrawlSpider):
         process.crawl(ConcordiaSpider)
         process.start()
 
-        print("\n{} page(s) scraped:\n{}".format(len(self.scraped_links), "\n".join(self.scraped_links)))
+        print("\n{} page(s) scraped:\n{}\n".format(len(self.scraped_links), "\n".join(self.scraped_links)))

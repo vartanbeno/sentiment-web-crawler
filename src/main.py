@@ -2,11 +2,9 @@ from classes.spider import ConcordiaSpider
 from classes.index_builder import IndexBuilder
 from classes.document_parser import DocumentParser
 from classes.query import Query
-from classes.tf_idf import TFIDF
 
 import os
 import argparse
-
 
 output_file = ConcordiaSpider.get_process().settings.get("FEED_URI")
 
@@ -28,28 +26,27 @@ if __name__ == '__main__':
 
     """
     First, delete the results.json file if it exists. The crawler will recreate it and populate it with data.
-    Run the crawler through the pages, and from the data in the JSON file, create the inverted index.
-    From that same JSON, generate some statistics from the scraped data.
-    Finally, prompt the user to conduct some queries against the retrieved data.
+    Run the crawler through the pages, and from the data in the JSON file, generate some statistics for each page.
+    From that same JSON, as well as the generated stats, create the inverted index.
+    Finally, prompt the user to conduct some queries against the index.
     """
     
     delete_results()
 
     spider = ConcordiaSpider()
     spider.crawl(start_url=args.start_url, obey_robots=not args.ignore_robots, limit=args.limit)
-    
-    builder = IndexBuilder(output_file)
-    builder.construct_index()
 
     document_parser = DocumentParser(output_file)
     document_parser.construct_stats()
 
-    index = builder.get_index()
     stats = document_parser.get_stats()
 
-    tfidf = TFIDF(index, stats)
+    index_builder = IndexBuilder(output_file, stats)
+    index_builder.construct_index()
 
-    query = Query(index, tfidf)
+    index = index_builder.get_index()
+
+    query = Query(index)
     choices = {"y": True, "n": False}
     while True:
         user_input = input("Would you like to conduct a query? [y/n] ")

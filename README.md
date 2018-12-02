@@ -24,7 +24,7 @@ To build the image and start up a container:
 
 ```
 docker image build -t crawler .
-docker container run -it --name crawler-demo crawler bash
+docker container run -it --name crawler-demo crawler
 ```
 
 This will take you to an interactive Bash terminal, from which you can [run](#running) the script. You can include the `--rm` option in the `run` command to automatically remove the container when you exit out of it.
