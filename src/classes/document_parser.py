@@ -1,4 +1,4 @@
-from helpers import afinn, pages, url, content, totals, total_documents, total_tokens, total_afinn, avg_afinn
+from helpers import afinn, pages, url, content, totals, total_documents, total_tokens, total_afinn, avg_tokens, avg_afinn
 
 import json
 
@@ -43,6 +43,7 @@ class DocumentParser:
 
         self.stats[totals][total_documents] = len(self.stats[pages])
         self.stats[totals][total_tokens] = total_num_tokens
+        self.stats[totals][avg_tokens] = total_num_tokens / len(self.stats[pages])
         self.stats[totals][total_afinn] = total_num_afinn
         self.stats[totals][avg_afinn] = total_num_afinn / len(self.stats[pages])
 
@@ -68,8 +69,10 @@ class DocumentParser:
 
                 stats_file.write("{} {} {}\n".format(page, page_info[total_tokens], page_info[total_afinn]))
 
-            stats_file.write("\n{} documents: {} total tokens, {} total Afinn score, {} average Afinn score\n"
-                             .format(len(stats[pages]), total_num_tokens, total_num_afinn, round(total_num_afinn / len(stats[pages]), 3)))
+            stats_file.write(
+                "\n{} documents: {} total tokens, {} average tokens, {} total Afinn score, {} average Afinn score\n"
+                .format(len(stats[pages]), total_num_tokens, round(total_num_tokens / len(stats[pages]), 3), total_num_afinn, round(total_num_afinn / len(stats[pages]), 3))
+            )
 
         print("Document stats available at {}, showcasing:\n\t"
               "- each scraped page's URL\n\t"

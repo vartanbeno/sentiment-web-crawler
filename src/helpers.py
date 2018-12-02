@@ -22,8 +22,8 @@ def clean_terms(text):
     """
     terms = word_tokenize(text)
     terms = [term.casefold() for term in terms]
-    """ includes the Em dash (like a long hyphen) and some special kind of apostrophe/double quotes """
-    return [term for term in terms if not re.fullmatch("[" + string.punctuation + "–’“”]+", term)]
+    """ includes the Em dash (a long hyphen), another dash, a kind of single/double quotes, and other punctuation """
+    return [term for term in terms if not re.fullmatch("[" + string.punctuation + "–—‘’“”…•‹›«»]+", term)]
 
 
 sentiment = "sentiment"
@@ -34,4 +34,5 @@ totals = "totals"
 total_documents = "total_documents"
 total_tokens = "total_tokens"
 total_afinn = "total_afinn"
+avg_tokens = "avg_tokens"
 avg_afinn = "avg_afinn"
