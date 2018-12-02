@@ -1,4 +1,4 @@
-from helpers import afinn, pages, url, content, totals, total_tokens, total_afinn, avg_afinn
+from helpers import afinn, pages, url, content, totals, total_documents, total_tokens, total_afinn, avg_afinn
 
 import json
 
@@ -41,6 +41,7 @@ class DocumentParser:
                     total_afinn: afinn.score(" ".join(result[content]))
                 }
 
+        self.stats[totals][total_documents] = len(self.stats[pages])
         self.stats[totals][total_tokens] = total_num_tokens
         self.stats[totals][total_afinn] = total_num_afinn
         self.stats[totals][avg_afinn] = total_num_afinn / len(self.stats[pages])
@@ -48,6 +49,12 @@ class DocumentParser:
         self.write_to_file(self.stats)
 
     def write_to_file(self, stats):
+        """
+        Write the statistics of each page to a "url_stats.txt" file.
+        Also write a total tally of each statistic at the end.
+        :param stats: dictionary containing page statistics
+        :return: None
+        """
         print("Outputting document stats to {} file...".format(self.stats_file))
         total_num_tokens = 0
         total_num_afinn = 0

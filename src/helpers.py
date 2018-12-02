@@ -5,12 +5,14 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from afinn import Afinn
+from math import log10
 
 
 word_tokenize = word_tokenize
 stopwords = set(stopwords.words("english"))
 ps = PorterStemmer()
 afinn = Afinn()
+log10 = log10
 
 
 def clean_terms(text):
@@ -20,7 +22,8 @@ def clean_terms(text):
     """
     terms = word_tokenize(text)
     terms = [term.casefold() for term in terms]
-    return [term for term in terms if not re.fullmatch("[" + string.punctuation + "]+", term)]
+    """ includes the Em dash (like a long hyphen) and some special kind of apostrophe/double quotes """
+    return [term for term in terms if not re.fullmatch("[" + string.punctuation + "–’“”]+", term)]
 
 
 sentiment = "sentiment"
@@ -28,6 +31,7 @@ pages = "pages"
 url = "url"
 content = "content"
 totals = "totals"
+total_documents = "total_documents"
 total_tokens = "total_tokens"
 total_afinn = "total_afinn"
 avg_afinn = "avg_afinn"

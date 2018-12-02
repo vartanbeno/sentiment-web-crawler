@@ -2,6 +2,7 @@ from classes.spider import ConcordiaSpider
 from classes.index_builder import IndexBuilder
 from classes.document_parser import DocumentParser
 from classes.query import Query
+from classes.tf_idf import TFIDF
 
 import os
 import argparse
@@ -28,7 +29,8 @@ if __name__ == '__main__':
     """
     First, delete the results.json file if it exists. The crawler will recreate it and populate it with data.
     Run the crawler through the pages, and from the data in the JSON file, create the inverted index.
-    Then, parse the index.txt file to retrieve the dictionary.
+    From that same JSON, generate some statistics from the scraped data.
+    Finally, prompt the user to conduct some queries against the retrieved data.
     """
     
     delete_results()
@@ -45,7 +47,9 @@ if __name__ == '__main__':
     index = builder.get_index()
     stats = document_parser.get_stats()
 
-    query = Query(index)
+    tfidf = TFIDF(index, stats)
+
+    query = Query(index, tfidf)
     choices = {"y": True, "n": False}
     while True:
         user_input = input("Would you like to conduct a query? [y/n] ")
