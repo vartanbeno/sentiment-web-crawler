@@ -23,6 +23,8 @@ class DocumentParser:
         """
         with open(self.file_to_parse) as file_to_parse:
             print("Outputting document stats to {} file...".format(self.stats_file))
+            total_terms = 0
+            total_afinn = 0
 
             with open(self.stats_file, "w", encoding="utf-8") as stats_file:
                 results = json.load(file_to_parse)
@@ -31,7 +33,16 @@ class DocumentParser:
                     url = result["url"]
                     terms = result["content"]
 
-                    stats_file.write("{} {} {}\n".format(url, len(terms), afinn.score(" ".join(terms))))
+                    doc_terms = len(terms)
+                    doc_afinn = afinn.score(" ".join(terms))
+
+                    total_terms += doc_terms
+                    total_afinn += doc_afinn
+
+                    stats_file.write("{} {} {}\n".format(url, doc_terms, doc_afinn))
+
+                stats_file.write("\n{} documents: {} total tokens, {} total Afinn score, {} average Afinn score\n"
+                                 .format(len(results), total_terms, total_afinn, round(total_afinn/len(results), 3)))
 
             print("Document stats available at {}, showcasing:\n\t"
                   "- each scraped page's URL\n\t"

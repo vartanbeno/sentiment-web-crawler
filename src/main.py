@@ -57,3 +57,5 @@ if __name__ == '__main__':
                 break
         except KeyError:
             pass
+
+    print("Bye!")
