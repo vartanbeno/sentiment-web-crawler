@@ -2,3 +2,4 @@ scrapy==1.5.1
 nltk==3.3
 afinn==0.1
 style==1.1.5
+beautifultable==0.5.3
