@@ -36,14 +36,14 @@ The file to run is in the root directory of the project.
 ```
 python main.py [-url "START_URL"]
                [-ign]
-               [-l LIMIT]
+               [-m MAX]
 ```
 
 The arguments are the following:
 
 1. `-url` or `--start-url`: URL the crawler will begin scraping links from. Surround it with quotes in the command line for best results. Default is the [about page](https://www.concordia.ca/about.html) of the Concordia University website.
 2. `-ign` or `--ignore-robots`: websites' robots.txt will be ignored. Default is false.
-3. `-l` or `--limit`: maximum number of links to scrape. Default is 10.
+3. `-m` or `--max`: maximum number of links to scrape. Default is 10.
 
 ## Authors
 

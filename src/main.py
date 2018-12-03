@@ -22,7 +22,7 @@ parser = argparse.ArgumentParser(description="Configure crawler's process.")
 
 parser.add_argument("-url", "--start-url", type=str, help="page where we start crawling for links", default="https://www.concordia.ca/about.html")
 parser.add_argument("-ign", "--ignore-robots", action="store_true", help="ignore websites' robots.txt", default=False)
-parser.add_argument("-l", "--limit", type=int, help="max number of pages to crawl", default=10)
+parser.add_argument("-m", "--max", type=int, help="maximum number of pages to crawl", default=10)
 
 args = parser.parse_args()
 
@@ -38,7 +38,7 @@ if __name__ == '__main__':
     delete_results()
 
     spider = ConcordiaSpider()
-    spider.crawl(start_url=args.start_url, obey_robots=not args.ignore_robots, limit=args.limit)
+    spider.crawl(start_url=args.start_url, obey_robots=not args.ignore_robots, max=args.max)
 
     document_parser = DocumentParser(output_file)
     document_parser.construct_stats()

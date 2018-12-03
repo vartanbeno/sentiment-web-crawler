@@ -87,7 +87,7 @@ class ConcordiaSpider(CrawlSpider):
             }
         })
 
-    def crawl(self, start_url="https://www.concordia.ca/about.html", obey_robots=True, limit=10):
+    def crawl(self, start_url="https://www.concordia.ca/about.html", obey_robots=True, max=10):
         """
         First, we define the start URL of the crawler by appending it to its start_urls attribute, which is currently
         just an empty list.
@@ -100,14 +100,14 @@ class ConcordiaSpider(CrawlSpider):
 
         :param start_url: URL the crawler will start scraping links from
         :param obey_robots: whether or not the crawler will obey websites' robots.txt
-        :param limit: max number of pages to be crawled
+        :param max: maximum number of pages to be crawled
         :return: None
         """
         ConcordiaSpider.start_urls = [start_url]
 
         process = ConcordiaSpider.get_process()
         process.settings.set("ROBOTSTXT_OBEY", obey_robots)
-        process.settings.set("CLOSESPIDER_ITEMCOUNT", limit)
+        process.settings.set("CLOSESPIDER_ITEMCOUNT", max)
 
         process.crawl(ConcordiaSpider)
         process.start()
