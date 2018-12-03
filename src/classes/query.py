@@ -108,7 +108,7 @@ class Query:
             try:
                 cosine_similarity = dot_product / (vector_norm_query * vector_norm_index)
             except ZeroDivisionError:
-                cosine_similarity = 0
+                cosine_similarity = 0.0
 
             self.results_with_cosine_similarity[url] = {}
             self.results_with_cosine_similarity[url]["cos"] = cosine_similarity
@@ -124,7 +124,6 @@ class Query:
         for row in rows:
             self.table.append_row(row)
 
-        self.table.sort(key="cosine similarity", reverse=True)
         print(self.table)
 
     @abstractmethod
@@ -146,15 +145,23 @@ class Query:
         If the score is positive, print it in green.
         If the score is negative, print it in red.
         If the score is 0, don't print it in a specific colour.
+
+        Results are sorted by cosine similarity.
+        The top 10 results are resorted again by sentiment:
+         - If the query was overall positive, sort the top 10 descending by sentiment score.
+         - If the query was overall negative, sort the top 10 ascending by sentiment score.
+         - If the query was neither positive nor negative, keep the results sorted solely by cosine similarity.
         :return: None
         """
         score = afinn.score(self.original_terms)
         if score > 0:
-            score = style.light_green(score)
+            styled_score = style.light_green(score)
         elif score < 0:
-            score = style.light_red(score)
+            styled_score = style.light_red(score)
+        else:
+            styled_score = score
 
-        print("{}: {}\nSentiment value: {}".format(self.__class__.__name__, self.original_terms, score))
+        print("{}: {}\nSentiment value: {}".format(self.__class__.__name__, self.original_terms, styled_score))
 
         if self.results:
 
@@ -164,6 +171,15 @@ class Query:
             for url, cos_and_score in self.results_with_cosine_similarity.items():
                 row = [cos_and_score["cos"], cos_and_score[sentiment], url]
                 rows.append(row)
+
+            # sort rows by cosine similarity, ascending
+            rows.sort(key=lambda row: row[0], reverse=True)
+
+            # sort top 10 results by sentiment, asc/desc depending on query sentiment
+            if score > 0:
+                rows = sorted(rows[:10], key=lambda row: row[1], reverse=True) + rows[10:]
+            elif score < 0:
+                rows = sorted(rows[:10], key=lambda row: row[1]) + rows[10:]
 
             self.generate_results_table(rows)
             print()
