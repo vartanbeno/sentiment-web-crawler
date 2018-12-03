@@ -3,6 +3,8 @@ from classes.index_builder import IndexBuilder
 from classes.document_parser import DocumentParser
 from classes.query import Query
 
+from helpers import style
+
 import os
 import argparse
 
@@ -14,7 +16,7 @@ def delete_results():
         os.remove(output_file)
 
 
-parser = argparse.ArgumentParser(description="Configure crawler and set max number of pages it should crawl.")
+parser = argparse.ArgumentParser(description="Configure crawler's process.")
 
 parser.add_argument("-url", "--start-url", type=str, help="page where we start crawling for links", default="https://www.concordia.ca/about.html")
 parser.add_argument("-ign", "--ignore-robots", action="store_true", help="ignore websites' robots.txt", default=False)
@@ -60,4 +62,4 @@ if __name__ == '__main__':
         except KeyError:
             pass
 
-    print("Bye!")
+    print(style.light_cyan("Bye!"))

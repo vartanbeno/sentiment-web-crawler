@@ -1,4 +1,4 @@
-from helpers import clean_terms, afinn, pages
+from helpers import clean_terms, afinn, pages, style
 
 
 class Query:
@@ -63,9 +63,18 @@ class Query:
     def print_results(self):
         """
         Print out terms in the query, and the postings found.
+        If the score is positive, print it in green.
+        If the score is negative, print it in red.
+        If the score is 0, don't print it in a specific colour.
         :return: None
         """
-        print("You searched for: {}\nSentiment value: {}".format(self.original_terms, afinn.score(self.original_terms)))
+        score = afinn.score(self.original_terms)
+        if score > 0:
+            score = style.light_green(score)
+        elif score < 0:
+            score = style.light_red(score)
+
+        print("You searched for: {}\nSentiment value: {}".format(self.original_terms, score))
         if self.results:
             print("{} page(s) found:\n{}\n".format("{:,}".format(len(self.results)), "\n".join(map(str, self.results))))
         else:

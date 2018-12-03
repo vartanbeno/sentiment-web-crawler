@@ -6,6 +6,7 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from afinn import Afinn
 from math import log10
+import style
 
 
 word_tokenize = word_tokenize
@@ -13,6 +14,7 @@ stopwords = set(stopwords.words("english"))
 ps = PorterStemmer()
 afinn = Afinn()
 log10 = log10
+style = style
 
 
 def clean_terms(text):
