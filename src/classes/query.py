@@ -1,7 +1,8 @@
-from helpers import clean_terms, afinn, pages, style, total_afinn, sentiment
+from helpers import clean_terms, afinn, pages, sqrt, style, total_afinn, sentiment
 from classes.tf_idf import TFIDF
 
 from beautifultable import BeautifulTable
+
 
 class Query:
 
@@ -22,7 +23,7 @@ class Query:
         self.results = []
         self.results_with_cosine_similarity = {}
 
-        self.table = BeautifulTable(max_width=160, default_alignment=BeautifulTable.ALIGN_LEFT)
+        self.table = BeautifulTable(max_width=140, default_alignment=BeautifulTable.ALIGN_LEFT)
         self.table.column_headers = ["cosine similarity", "Afinn score", "URL"]
         self.table.numeric_precision = 20
 
@@ -98,9 +99,12 @@ class Query:
             tf_idf_to_index = self.get_tf_idf_of_terms_in_index(url)
 
             dot_product = sum(i * j for i, j in zip(tf_idf_to_query, tf_idf_to_index))
-            vector_norms = sum(i**2 + j**2 for i, j in zip(tf_idf_to_query, tf_idf_to_index))
+
+            vector_norm_query = sqrt(sum(i**2 for i in tf_idf_to_query))
+            vector_norm_index = sqrt(sum(i**2 for i in tf_idf_to_index))
+
             try:
-                cosine_similarity = dot_product / vector_norms
+                cosine_similarity = dot_product / (vector_norm_query * vector_norm_index)
             except ZeroDivisionError:
                 cosine_similarity = 0
 
@@ -118,6 +122,7 @@ class Query:
         for row in rows:
             self.table.append_row(row)
 
+        self.table.sort(key="cosine similarity", reverse=True)
         print(self.table)
 
     def execute(self, terms):

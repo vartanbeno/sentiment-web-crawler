@@ -5,7 +5,7 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from afinn import Afinn
-from math import log10
+from math import log10, sqrt
 import style
 
 
@@ -14,6 +14,7 @@ stopwords = set(stopwords.words("english"))
 ps = PorterStemmer()
 afinn = Afinn()
 log10 = log10
+sqrt = sqrt
 style = style
 
 
