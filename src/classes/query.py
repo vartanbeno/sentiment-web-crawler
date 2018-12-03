@@ -3,6 +3,8 @@ from classes.tf_idf import TFIDF
 
 from beautifultable import BeautifulTable
 
+from abc import abstractmethod
+
 
 class Query:
 
@@ -25,7 +27,7 @@ class Query:
 
         self.table = BeautifulTable(max_width=140, default_alignment=BeautifulTable.ALIGN_LEFT)
         self.table.column_headers = ["cosine similarity", "Afinn score", "URL"]
-        self.table.numeric_precision = 20
+        self.table.numeric_precision = 10
 
     @staticmethod
     def ask_user():
@@ -125,25 +127,18 @@ class Query:
         self.table.sort(key="cosine similarity", reverse=True)
         print(self.table)
 
+    @abstractmethod
     def execute(self, terms):
         """
-        Get pages each term appear in, and conduct their intersection (AND).
-        :param terms: the user's query
-        :return: list of pages containing all of the terms in the query (AND).
+        Abstract method, to be implemented by subclasses.
+        If run by parent class, will print out message pointing out error.
+        :param terms: the user's query.
+        :return: None
         """
-        self.original_terms = terms
-        self.terms = clean_terms(terms)
-        self.results_with_cosine_similarity = {}
-
-        lists_of_pages = self.get_pages()
-
-        try:
-            self.results = set(lists_of_pages[0]).intersection(*[set(urls) for urls in lists_of_pages[1:]])
-            self.get_cosine_similarities()
-        except IndexError:
-            self.results = []
-
-        self.print_results()
+        if self.__class__.__name__ == "Query":
+            print("You are conducting a query using the %s class." % self.__class__.__name__)
+            print("Make sure to use either AndQuery or OrQuery.\n")
+        return
 
     def print_results(self):
         """
@@ -159,7 +154,7 @@ class Query:
         elif score < 0:
             score = style.light_red(score)
 
-        print("You searched for: {}\nSentiment value: {}".format(self.original_terms, score))
+        print("{}: {}\nSentiment value: {}".format(self.__class__.__name__, self.original_terms, score))
 
         if self.results:
 

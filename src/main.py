@@ -2,6 +2,7 @@ from classes.spider import ConcordiaSpider
 from classes.index_builder import IndexBuilder
 from classes.document_parser import DocumentParser
 from classes.query import Query
+from classes.and_query import AndQuery
 
 from helpers import style
 
@@ -48,17 +49,17 @@ if __name__ == '__main__':
 
     index = index_builder.get_index()
 
-    query = Query(index, stats)
-    choices = {"y": True, "n": False}
+    and_query = AndQuery(index, stats)
+    choices = ["and", "or"]
     while True:
-        user_input = input("Would you like to conduct a query? [y/n] ")
-        try:
-            if choices[user_input.lower()]:
-                user_query = query.ask_user()
-                query.execute(user_query)
-            else:
-                break
-        except KeyError:
-            pass
+        user_input = input("Would you like to conduct an AND query or an OR query? Hit enter for no. [and/or] ")
+        if user_input == "":
+            break
+        elif user_input.lower() in ["and", "or"]:
+            user_query = Query.ask_user()
+            if user_input.lower().strip() == "and":
+                and_query.execute(user_query)
+            elif user_input.lower().strip() == "or":
+                print(style.light_red("TODO"))
 
     print(style.light_cyan("Bye!"))
