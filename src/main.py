@@ -3,6 +3,7 @@ from classes.index_builder import IndexBuilder
 from classes.document_parser import DocumentParser
 from classes.query import Query
 from classes.and_query import AndQuery
+from classes.or_query import OrQuery
 
 from helpers import style
 
@@ -50,6 +51,8 @@ if __name__ == '__main__':
     index = index_builder.get_index()
 
     and_query = AndQuery(index, stats)
+    or_query = OrQuery(index, stats)
+
     choices = ["and", "or"]
     while True:
         user_input = input("Would you like to conduct an AND query or an OR query? Hit enter for no. [and/or] ")
@@ -60,6 +63,6 @@ if __name__ == '__main__':
             if user_input.lower().strip() == "and":
                 and_query.execute(user_query)
             elif user_input.lower().strip() == "or":
-                print(style.light_red("TODO"))
+                or_query.execute(user_query)
 
     print(style.light_cyan("Bye!"))
