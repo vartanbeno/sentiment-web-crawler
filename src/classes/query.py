@@ -1,5 +1,6 @@
-from helpers import clean_terms, afinn, pages, style
+from helpers import clean_terms, afinn, pages, style, total_afinn, sentiment
 from classes.tf_idf import TFIDF
+from pprint import pprint
 
 
 class Query:
@@ -98,7 +99,9 @@ class Query:
             except ZeroDivisionError:
                 cosine_similarity = 0
 
-            self.results_with_cosine_similarity[url] = cosine_similarity
+            self.results_with_cosine_similarity[url] = {}
+            self.results_with_cosine_similarity[url]["cos"] = cosine_similarity
+            self.results_with_cosine_similarity[url][sentiment] = self.stats[pages][url][total_afinn]
 
     def execute(self, terms):
         """
@@ -108,6 +111,7 @@ class Query:
         """
         self.original_terms = terms
         self.terms = clean_terms(terms)
+        self.results_with_cosine_similarity = {}
 
         lists_of_pages = self.get_pages()
 
@@ -136,6 +140,8 @@ class Query:
         print("You searched for: {}\nSentiment value: {}".format(self.original_terms, score))
         if self.results:
             print("{} page(s) found:".format("{:,}".format(len(self.results))))
-            print("{}\n".format("\n".join("%s => %s" % (v, k) for k, v in self.results_with_cosine_similarity.items())))
+            for url, cos_and_score in self.results_with_cosine_similarity.items():
+                print("{} => {} => {}".format(cos_and_score["cos"], cos_and_score[sentiment], url))
+            print()
         else:
             print("Your search didn't return any results.\n")
