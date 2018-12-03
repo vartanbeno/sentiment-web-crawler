@@ -42,8 +42,10 @@ class IndexBuilder:
                 for term in terms:
                     if term not in self.index:
                         self.index[term] = {}
+                        self.index[term]["cf"] = 0
                         self.index[term][sentiment] = afinn.score(term)
                         self.index[term][pages] = {}
+                    self.index[term]["cf"] += 1
                     if url not in self.index[term][pages]:
                         self.index[term][pages][url] = {}
                         self.index[term][pages][url]["tf"] = 1
@@ -69,7 +71,7 @@ class IndexBuilder:
         with open(self.index_file, "w", encoding="utf-8") as index_file:
             for term in sorted(index):
                 try:
-                    index_file.write("{} {}".format(term, index[term][sentiment]))
+                    index_file.write("{} {} {}".format(term, index[term]["cf"], index[term][sentiment]))
                     for url, stats in index[term][pages].items():
                         index_file.write(" {} {} {}".format(url, stats["tf"], stats["tf-idf"]))
                     index_file.write("\n")
