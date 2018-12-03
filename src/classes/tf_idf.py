@@ -26,7 +26,7 @@ class TFIDF:
         except KeyError:
             return []
 
-    def get_document_frequency(self, term):
+    def get_document_frequency_of_term(self, term):
         """
         From the pages scraped, count how many of those have the term in question.
         :param term: a word
@@ -37,7 +37,7 @@ class TFIDF:
         except KeyError:
             return 0
 
-    def get_term_frequency_in_page(self, term, url):
+    def get_term_frequency_in_document(self, term, url):
         """
         For the URL of the web page, count how many times the term appears in it.
         :param term: a word
@@ -55,7 +55,7 @@ class TFIDF:
         :param term: a word
         :return: inverse document frequency of term, or idf
         """
-        dft = self.get_document_frequency(term)
+        dft = self.get_document_frequency_of_term(term)
         try:
             return log10(self.N / dft)
         except ZeroDivisionError:
@@ -68,10 +68,11 @@ class TFIDF:
         :param url: a web page
         :return: tf-idf of word in web page
         """
-        tf = self.get_term_frequency_in_page(term, url)
+        tf = self.get_term_frequency_in_document(term, url)
         idf = self.get_idf_weight(term)
         return tf * idf
 
-    tf = get_term_frequency_in_page
+    dft = get_document_frequency_of_term
+    tf = get_term_frequency_in_document
     idf = get_idf_weight
     tf_idf = compute_tf_idf

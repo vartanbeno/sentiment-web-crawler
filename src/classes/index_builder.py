@@ -1,4 +1,4 @@
-from helpers import afinn, sentiment, pages
+from helpers import afinn, log10, sentiment, pages
 from classes.tf_idf import TFIDF
 
 import json
@@ -42,10 +42,10 @@ class IndexBuilder:
                 for term in terms:
                     if term not in self.index:
                         self.index[term] = {}
-                        self.index[term]["cf"] = 0
+                        self.index[term]["cft"] = 0
                         self.index[term][sentiment] = afinn.score(term)
                         self.index[term][pages] = {}
-                    self.index[term]["cf"] += 1
+                    self.index[term]["cft"] += 1
                     if url not in self.index[term][pages]:
                         self.index[term][pages][url] = {}
                         self.index[term][pages][url]["tf"] = 1
@@ -53,6 +53,8 @@ class IndexBuilder:
                         self.index[term][pages][url]["tf"] += 1
 
             for term in self.index:
+                self.index[term]["dft"] = self.tfidf.dft(term)
+                self.index[term]["idf"] = self.tfidf.idf(term)
                 term_urls = list(self.index[term][pages])
                 for url in term_urls:
                     self.index[term][pages][url]["tf-idf"] = self.tfidf.tf_idf(term, url)
@@ -71,7 +73,7 @@ class IndexBuilder:
         with open(self.index_file, "w", encoding="utf-8") as index_file:
             for term in sorted(index):
                 try:
-                    index_file.write("{} {} {}".format(term, index[term]["cf"], index[term][sentiment]))
+                    index_file.write("{} {} {} {} {}".format(term, index[term]["cft"], index[term]["dft"], index[term]["idf"], index[term][sentiment]))
                     for url, stats in index[term][pages].items():
                         index_file.write(" {} {} {}".format(url, stats["tf"], stats["tf-idf"]))
                     index_file.write("\n")
