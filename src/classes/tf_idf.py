@@ -59,7 +59,7 @@ class TFIDF:
         try:
             return log10(self.N / dft)
         except ZeroDivisionError:
-            return 0
+            return 0.0
 
     def compute_tf_idf(self, term, url):
         """

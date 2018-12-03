@@ -48,7 +48,7 @@ if __name__ == '__main__':
 
     index = index_builder.get_index()
 
-    query = Query(index)
+    query = Query(index, stats)
     choices = {"y": True, "n": False}
     while True:
         user_input = input("Would you like to conduct a query? [y/n] ")
@@ -56,7 +56,6 @@ if __name__ == '__main__':
             if choices[user_input.lower()]:
                 user_query = query.ask_user()
                 query.execute(user_query)
-                query.print_results()
             else:
                 break
         except KeyError:

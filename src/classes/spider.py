@@ -80,7 +80,11 @@ class ConcordiaSpider(CrawlSpider):
             "USER_AGENT": "Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/42.0",
             "FEED_FORMAT": "json",
             "FEED_URI": "results.json",
-            "CONCURRENT_REQUESTS": 1
+            "CONCURRENT_REQUESTS": 1,
+            "DEFAULT_REQUEST_HEADERS": {
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                "Accept-Language": "en",
+            }
         })
 
     def crawl(self, start_url="https://www.concordia.ca/about.html", obey_robots=True, limit=10):
