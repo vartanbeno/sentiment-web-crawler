@@ -5,6 +5,10 @@ import json
 
 class DocumentParser:
 
+    # static variables
+    stats_file = "url_stats.txt"
+    summary = "SUMMARY:"
+
     def __init__(self, file_to_parse):
         """
         Initialize the document parser with the file containing the pages and their content.
@@ -12,7 +16,6 @@ class DocumentParser:
         :param file_to_parse: file with the crawler's output
         """
         self.file_to_parse = file_to_parse
-        self.stats_file = "url_stats.txt"
         self.stats = {pages: {}, totals: {}}
 
     def construct_stats(self):
@@ -70,8 +73,8 @@ class DocumentParser:
                 stats_file.write("{} {} {}\n".format(page, page_info[total_tokens], page_info[total_afinn]))
 
             stats_file.write(
-                "\n{} documents: {} total tokens, {} average tokens, {} total Afinn score, {} average Afinn score\n"
-                .format(len(stats[pages]), total_num_tokens, round(total_num_tokens / len(stats[pages]), 3), total_num_afinn, round(total_num_afinn / len(stats[pages]), 3))
+                "\n{} {} document(s): {} total tokens, {} average tokens, {} total Afinn score, {} average Afinn score\n"
+                .format(self.summary, len(stats[pages]), total_num_tokens, round(total_num_tokens / len(stats[pages]), 3), total_num_afinn, round(total_num_afinn / len(stats[pages]), 3))
             )
 
         print("Document stats available at {}, showcasing:\n\t"
@@ -87,3 +90,34 @@ class DocumentParser:
         :return: the stats
         """
         return self.stats
+
+    @staticmethod
+    def build_stats_from_file():
+        """
+        Build the statistics dictionary from the file.
+        :return: statistics dictionary of documents
+        """
+
+        stats = {pages: {}, totals: {}}
+
+        with open(DocumentParser.stats_file) as stats_file:
+
+            for line in stats_file.readlines():
+
+                elements = line.split()
+
+                if not elements:
+                    continue
+
+                if elements[0] == DocumentParser.summary:
+                    stats[totals][total_documents] = int(elements[1])
+                    stats[totals][total_tokens] = int(elements[3])
+                    stats[totals][avg_tokens] = float(elements[6])
+                    stats[totals][total_afinn] = float(elements[9])
+                    stats[totals][avg_afinn] = float(elements[13])
+                else:
+                    stats[pages][elements[0]] = {}
+                    stats[pages][elements[0]][total_tokens] = int(elements[1])
+                    stats[pages][elements[0]][total_afinn] = float(elements[2])
+
+        return stats

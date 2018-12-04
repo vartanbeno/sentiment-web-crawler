@@ -11,21 +11,22 @@ import argparse
 
 output_file = ConcordiaSpider.get_process().settings.get("FEED_URI")
 
+parser = argparse.ArgumentParser(description="Configure crawler's process.")
+
+parser.add_argument("-url", "--start-url", type=str, help="page where we start crawling for links", default="https://www.concordia.ca/about.html")
+parser.add_argument("-ign", "--ignore-robots", action="store_true", help="ignore websites' robots.txt", default=False)
+parser.add_argument("-m", "--max", type=int, help="maximum number of pages to crawl", default=10)
+parser.add_argument("-skip", "--skip-crawl", action="store_true", help="skip crawler, build index and stats from current results.json", default=False)
+
+args = parser.parse_args()
+
 
 def delete_results():
     if os.path.exists(output_file):
         os.remove(output_file)
 
 
-parser = argparse.ArgumentParser(description="Configure crawler's process.")
-
-parser.add_argument("-url", "--start-url", type=str, help="page where we start crawling for links", default="https://www.concordia.ca/about.html")
-parser.add_argument("-ign", "--ignore-robots", action="store_true", help="ignore websites' robots.txt", default=False)
-parser.add_argument("-m", "--max", type=int, help="maximum number of pages to crawl", default=10)
-
-args = parser.parse_args()
-
-if __name__ == '__main__':
+def run_spider():
 
     """
     First, delete the results.json file if it exists. The crawler will recreate it and populate it with data.
@@ -33,7 +34,7 @@ if __name__ == '__main__':
     From that same JSON, as well as the generated stats, create the inverted index.
     Finally, prompt the user to conduct some queries against the index.
     """
-    
+
     delete_results()
 
     spider = ConcordiaSpider()
@@ -49,10 +50,22 @@ if __name__ == '__main__':
 
     index = index_builder.get_index()
 
+    conduct_queries(index, stats)
+
+
+def build_stats_and_index():
+
+    stats = DocumentParser.build_stats_from_file()
+    index = IndexBuilder.build_index_from_file()
+
+    conduct_queries(index, stats)
+
+
+def conduct_queries(index, stats):
+
     and_query = AndQuery(index, stats)
     or_query = OrQuery(index, stats)
 
-    choices = ["and", "or"]
     while True:
         user_input = input("Would you like to conduct an AND query or an OR query? Hit enter for no. [and/or] ")
         if user_input == "":
@@ -63,5 +76,27 @@ if __name__ == '__main__':
                 and_query.execute(user_query)
             elif user_input.lower().strip() == "or":
                 or_query.execute(user_query)
+
+
+if __name__ == '__main__':
+
+    if not args.skip_crawl:
+
+        run_spider()
+
+    else:
+
+        print("Skipping crawl...")
+
+        if not os.path.exists(IndexBuilder.index_file) or not os.path.exists(DocumentParser.stats_file):
+
+            print(
+                "Both {} and {} files have to exist to skip crawling. Run the crawler first to get a data set."
+                .format(IndexBuilder.index_file, DocumentParser.stats_file)
+            )
+
+        else:
+
+            build_stats_and_index()
 
     print("Bye!")

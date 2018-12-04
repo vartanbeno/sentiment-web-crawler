@@ -6,6 +6,9 @@ import json
 
 class IndexBuilder:
 
+    # static variables
+    index_file = "index.txt"
+
     def __init__(self, file_to_parse, stats):
         """
         Initialize the index builder with the file containing the pages and their content.
@@ -15,8 +18,6 @@ class IndexBuilder:
         """
         self.file_to_parse = file_to_parse
         self.stats = stats
-
-        self.index_file = "index.txt"
         self.index = {}
 
         self.tfidf = TFIDF(self.index, self.stats)
@@ -86,3 +87,33 @@ class IndexBuilder:
         :return: the inverted index
         """
         return self.index
+
+    @staticmethod
+    def build_index_from_file():
+        """
+        Build the inverted index from the file.
+        :return: inverted index
+        """
+
+        index = {}
+
+        with open(IndexBuilder.index_file) as index_file:
+
+            for line in index_file.readlines():
+
+                elements = line.split()
+
+                index[elements[0]] = {}
+                index[elements[0]]["cft"] = int(elements[1])
+                index[elements[0]]["dft"] = int(elements[2])
+                index[elements[0]]["idf"] = float(elements[3])
+                index[elements[0]][sentiment] = float(elements[4])
+
+                index[elements[0]][pages] = {}
+
+                for i in range (5, len(elements), 3):
+                    index[elements[0]][pages][elements[i]] = {}
+                    index[elements[0]][pages][elements[i]]["tf"] = int(elements[i+1])
+                    index[elements[0]][pages][elements[i]]["tf-idf"] = float(elements[i+2])
+
+        return index

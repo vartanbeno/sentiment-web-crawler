@@ -45,6 +45,13 @@ The arguments are the following:
 1. `-url` or `--start-url`: URL the crawler will begin scraping links from. Surround it with quotes in the command line for best results. Default is the [about page](https://www.concordia.ca/about.html) of the Concordia University website.
 2. `-ign` or `--ignore-robots`: websites' robots.txt will be ignored. Default is false.
 3. `-m` or `--max`: maximum number of links to scrape. Default is 10.
+4. `-skip` or `--skip-crawl`: spider won't be run, and index/stats will be built from current results file. Default is false.
+
+If you intend to use that last one, no need to specify the others. You would obviously need to have run the crawler first, to generate a data set. Simple run:
+
+```
+python main.py -skip
+```
 
 ## Authors
 
