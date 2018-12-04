@@ -5,10 +5,9 @@ from classes.query import Query
 from classes.and_query import AndQuery
 from classes.or_query import OrQuery
 
-from helpers import style
-
 import os
 import argparse
+
 
 output_file = ConcordiaSpider.get_process().settings.get("FEED_URI")
 
@@ -65,4 +64,4 @@ if __name__ == '__main__':
             elif user_input.lower().strip() == "or":
                 or_query.execute(user_query)
 
-    print(style.light_cyan("Bye!"))
+    print("Bye!")

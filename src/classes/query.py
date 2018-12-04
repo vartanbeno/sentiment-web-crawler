@@ -1,4 +1,4 @@
-from helpers import clean_terms, afinn, pages, sqrt, style, total_afinn, sentiment
+from helpers import afinn, pages, sqrt, total_afinn, sentiment
 from classes.tf_idf import TFIDF
 
 from beautifultable import BeautifulTable
@@ -154,14 +154,8 @@ class Query:
         :return: None
         """
         score = afinn.score(self.original_terms)
-        if score > 0:
-            styled_score = style.light_green(score)
-        elif score < 0:
-            styled_score = style.light_red(score)
-        else:
-            styled_score = score
 
-        print("{}: {}\nSentiment value: {}".format(self.__class__.__name__, self.original_terms, styled_score))
+        print("{}: {}\nSentiment value: {}".format(self.__class__.__name__, self.original_terms, score))
 
         if self.results:
 
