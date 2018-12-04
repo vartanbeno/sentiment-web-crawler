@@ -13,7 +13,7 @@ The following Python packages are required to run the program:
 - [scrapy](https://scrapy.org/)
 - [nltk](https://pypi.org/project/nltk/)
 - [afinn](https://pypi.org/project/afinn/)
-- [beautifultable](https://pypi.org/project/beautifultable/)
+- [tabulate](https://pypi.org/project/tabulate/)
 
 Click [here](requirements.txt) for the specific versions of the packages used for this project.
 

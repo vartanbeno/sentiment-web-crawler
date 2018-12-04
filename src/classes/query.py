@@ -1,7 +1,7 @@
 from helpers import clean_terms, afinn, sqrt, PAGES, TOTAL_AFINN, SENTIMENT, COSINE_SIMILARITY, AFINN_SCORE, URL
 from classes.tf_idf import TFIDF
 
-from beautifultable import BeautifulTable
+from tabulate import tabulate
 
 from abc import abstractmethod
 
@@ -27,9 +27,7 @@ class Query:
         self.results = []
         self.results_with_cosine_similarity = {}
 
-        self.table = BeautifulTable(max_width=140, default_alignment=BeautifulTable.ALIGN_LEFT)
-        self.table.column_headers = [COSINE_SIMILARITY, AFINN_SCORE, URL]
-        self.table.numeric_precision = 10
+        self.headers = [COSINE_SIMILARITY, AFINN_SCORE, URL]
 
     @staticmethod
     def ask_user():
@@ -122,11 +120,7 @@ class Query:
         :param rows: list of results
         :return: None
         """
-        self.table.clear()
-        for row in rows:
-            self.table.append_row(row)
-
-        print(self.table)
+        print(tabulate(tabular_data=rows, headers=self.headers, tablefmt="fancy_grid", numalign="left", stralign="left"))
 
     @abstractmethod
     def execute(self, terms):
@@ -198,9 +192,7 @@ class AndQuery(Query):
         :return: list of pages containing all of the terms in the query (AND).
         """
         self.original_terms = terms
-        print(self.original_terms)
         self.terms = clean_terms(terms, self.remove_stopwords)
-        print(self.terms)
         self.results_with_cosine_similarity = {}
 
         lists_of_pages = self.get_pages()
