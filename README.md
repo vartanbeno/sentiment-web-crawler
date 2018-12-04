@@ -47,7 +47,7 @@ The arguments are the following:
 3. `-m` or `--max`: maximum number of links to scrape. Default is 10.
 4. `-skip` or `--skip-crawl`: spider won't be run, and index/stats will be built from current results file. Default is false.
 
-If you intend to use that last one, no need to specify the others. You would obviously need to have run the crawler first, to generate a data set. Simple run:
+If you intend to use that last one, no need to specify the others. You would obviously need to have run the crawler first, to generate a data set. Simply run:
 
 ```
 python main.py -skip
