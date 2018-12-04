@@ -1,4 +1,4 @@
-from helpers import afinn, log10, sentiment, pages
+from helpers import afinn, SENTIMENT, PAGES, TF, CFT, DFT, IDF, TF_IDF
 from classes.tf_idf import TFIDF
 
 import json
@@ -43,22 +43,22 @@ class IndexBuilder:
                 for term in terms:
                     if term not in self.index:
                         self.index[term] = {}
-                        self.index[term]["cft"] = 0
-                        self.index[term][sentiment] = afinn.score(term)
-                        self.index[term][pages] = {}
-                    self.index[term]["cft"] += 1
-                    if url not in self.index[term][pages]:
-                        self.index[term][pages][url] = {}
-                        self.index[term][pages][url]["tf"] = 1
+                        self.index[term][CFT] = 0
+                        self.index[term][SENTIMENT] = afinn.score(term)
+                        self.index[term][PAGES] = {}
+                    self.index[term][CFT] += 1
+                    if url not in self.index[term][PAGES]:
+                        self.index[term][PAGES][url] = {}
+                        self.index[term][PAGES][url][TF] = 1
                     else:
-                        self.index[term][pages][url]["tf"] += 1
+                        self.index[term][PAGES][url][TF] += 1
 
             for term in self.index:
-                self.index[term]["dft"] = self.tfidf.dft(term)
-                self.index[term]["idf"] = self.tfidf.idf(term)
-                term_urls = list(self.index[term][pages])
+                self.index[term][DFT] = self.tfidf.dft(term)
+                self.index[term][IDF] = self.tfidf.idf(term)
+                term_urls = list(self.index[term][PAGES])
                 for url in term_urls:
-                    self.index[term][pages][url]["tf-idf"] = self.tfidf.tf_idf(term, url)
+                    self.index[term][PAGES][url][TF_IDF] = self.tfidf.tf_idf(term, url)
 
         print("Index created. There's a total of {} distinct terms.".format(len(self.index)))
         self.write_to_file(self.index)
@@ -74,9 +74,9 @@ class IndexBuilder:
         with open(self.index_file, "w", encoding="utf-8") as index_file:
             for term in sorted(index):
                 try:
-                    index_file.write("{} {} {} {} {}".format(term, index[term]["cft"], index[term]["dft"], index[term]["idf"], index[term][sentiment]))
-                    for url, stats in index[term][pages].items():
-                        index_file.write(" {} {} {}".format(url, stats["tf"], stats["tf-idf"]))
+                    index_file.write("{} {} {} {} {}".format(term, index[term][CFT], index[term][DFT], index[term][IDF], index[term][SENTIMENT]))
+                    for url, stats in index[term][PAGES].items():
+                        index_file.write(" {} {} {}".format(url, stats[TF], stats[TF_IDF]))
                     index_file.write("\n")
                 except UnicodeEncodeError:
                     pass
@@ -92,7 +92,7 @@ class IndexBuilder:
     def build_index_from_file():
         """
         Build the inverted index from the file.
-        :return: inverted index
+        :return: the inverted index
         """
 
         index = {}
@@ -104,16 +104,16 @@ class IndexBuilder:
                 elements = line.split()
 
                 index[elements[0]] = {}
-                index[elements[0]]["cft"] = int(elements[1])
-                index[elements[0]]["dft"] = int(elements[2])
-                index[elements[0]]["idf"] = float(elements[3])
-                index[elements[0]][sentiment] = float(elements[4])
+                index[elements[0]][CFT] = int(elements[1])
+                index[elements[0]][DFT] = int(elements[2])
+                index[elements[0]][IDF] = float(elements[3])
+                index[elements[0]][SENTIMENT] = float(elements[4])
 
-                index[elements[0]][pages] = {}
+                index[elements[0]][PAGES] = {}
 
                 for i in range (5, len(elements), 3):
-                    index[elements[0]][pages][elements[i]] = {}
-                    index[elements[0]][pages][elements[i]]["tf"] = int(elements[i+1])
-                    index[elements[0]][pages][elements[i]]["tf-idf"] = float(elements[i+2])
+                    index[elements[0]][PAGES][elements[i]] = {}
+                    index[elements[0]][PAGES][elements[i]][TF] = int(elements[i + 1])
+                    index[elements[0]][PAGES][elements[i]][TF_IDF] = float(elements[i + 2])
 
         return index

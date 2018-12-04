@@ -1,4 +1,4 @@
-from helpers import clean_terms, afinn, pages, sqrt, total_afinn, sentiment
+from helpers import clean_terms, afinn, sqrt, PAGES, TOTAL_AFINN, SENTIMENT, COSINE_SIMILARITY, AFINN_SCORE, URL
 from classes.tf_idf import TFIDF
 
 from beautifultable import BeautifulTable
@@ -26,7 +26,7 @@ class Query:
         self.results_with_cosine_similarity = {}
 
         self.table = BeautifulTable(max_width=140, default_alignment=BeautifulTable.ALIGN_LEFT)
-        self.table.column_headers = ["cosine similarity", "Afinn score", "URL"]
+        self.table.column_headers = [COSINE_SIMILARITY, AFINN_SCORE, URL]
         self.table.numeric_precision = 10
 
     @staticmethod
@@ -50,7 +50,7 @@ class Query:
 
         for term in self.terms:
             try:
-                results[term] = self.index[term][pages]
+                results[term] = self.index[term][PAGES]
             except KeyError:
                 results[term] = []
 
@@ -111,8 +111,8 @@ class Query:
                 cosine_similarity = 0.0
 
             self.results_with_cosine_similarity[url] = {}
-            self.results_with_cosine_similarity[url]["cos"] = cosine_similarity
-            self.results_with_cosine_similarity[url][sentiment] = self.stats[pages][url][total_afinn]
+            self.results_with_cosine_similarity[url][COSINE_SIMILARITY] = cosine_similarity
+            self.results_with_cosine_similarity[url][SENTIMENT] = self.stats[PAGES][url][TOTAL_AFINN]
 
     def generate_results_table(self, rows):
         """
@@ -134,8 +134,8 @@ class Query:
         :param terms: the user's query.
         :return: None
         """
-        if self.__class__.__name__ == "Query":
-            print("You are conducting a query using the %s class." % self.__class__.__name__)
+        if self.__class__.__name__ == Query.__class__.__name__:
+            print("You are conducting a query using the %s class." % Query.__class__.__name__)
             print("Make sure to use either AndQuery or OrQuery.\n")
         return
 
@@ -163,7 +163,7 @@ class Query:
 
             rows = []
             for url, cos_and_score in self.results_with_cosine_similarity.items():
-                row = [cos_and_score["cos"], cos_and_score[sentiment], url]
+                row = [cos_and_score[COSINE_SIMILARITY], cos_and_score[SENTIMENT], url]
                 rows.append(row)
 
             # sort rows by cosine similarity, ascending

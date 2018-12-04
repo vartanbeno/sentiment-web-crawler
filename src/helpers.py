@@ -27,13 +27,22 @@ def clean_terms(text):
     return [term for term in terms if not re.fullmatch("[" + string.punctuation + "–—‘’“”…•‹›«»]+", term)]
 
 
-sentiment = "sentiment"
-pages = "pages"
-url = "url"
-content = "content"
-totals = "totals"
-total_documents = "total_documents"
-total_tokens = "total_tokens"
-total_afinn = "total_afinn"
-avg_tokens = "avg_tokens"
-avg_afinn = "avg_afinn"
+SENTIMENT = "sentiment"
+PAGES = "pages"
+URL = "url"
+CONTENT = "content"
+TOTALS = "totals"
+TOTAL_DOCUMENTS = "total_documents"
+TOTAL_TOKENS = "total_tokens"
+TOTAL_AFINN = "total_afinn"
+AVG_TOKENS = "avg_tokens"
+AVG_AFINN = "avg_afinn"
+
+TF = "tf"
+CFT = "cft"
+DFT = "dft"
+IDF = "idf"
+TF_IDF = "tf-idf"
+
+COSINE_SIMILARITY = "cosine similarity"
+AFINN_SCORE = "Afinn score"

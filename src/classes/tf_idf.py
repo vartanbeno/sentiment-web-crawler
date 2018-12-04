@@ -1,4 +1,4 @@
-from helpers import pages, log10, totals, total_documents
+from helpers import PAGES, log10, TOTALS, TOTAL_DOCUMENTS, TF
 
 
 class TFIDF:
@@ -13,7 +13,7 @@ class TFIDF:
         self.index = index
         self.stats = stats
 
-        self.N = self.stats[totals][total_documents]
+        self.N = self.stats[TOTALS][TOTAL_DOCUMENTS]
 
     def get_documents_of_term(self, term):
         """
@@ -22,7 +22,7 @@ class TFIDF:
         :return: list of web pages
         """
         try:
-            return list(self.index[term][pages].keys())
+            return list(self.index[term][PAGES].keys())
         except KeyError:
             return []
 
@@ -45,7 +45,7 @@ class TFIDF:
         :return: number of times the term appears in the web page
         """
         try:
-            return self.index[term][pages][url]["tf"]
+            return self.index[term][PAGES][url][TF]
         except KeyError:
             return 0
 

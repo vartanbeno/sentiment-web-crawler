@@ -1,4 +1,4 @@
-from helpers import afinn, pages, url, content, totals, total_documents, total_tokens, total_afinn, avg_tokens, avg_afinn
+from helpers import afinn, PAGES, URL, CONTENT, TOTALS, TOTAL_DOCUMENTS, TOTAL_TOKENS, TOTAL_AFINN, AVG_TOKENS, AVG_AFINN
 
 import json
 
@@ -16,7 +16,7 @@ class DocumentParser:
         :param file_to_parse: file with the crawler's output
         """
         self.file_to_parse = file_to_parse
-        self.stats = {pages: {}, totals: {}}
+        self.stats = {PAGES: {}, TOTALS: {}}
 
     def construct_stats(self):
         """
@@ -33,22 +33,22 @@ class DocumentParser:
 
             for result in results:
 
-                doc_terms = len(result[content])
-                doc_afinn = afinn.score(" ".join(result[content]))
+                doc_terms = len(result[CONTENT])
+                doc_afinn = afinn.score(" ".join(result[CONTENT]))
 
                 total_num_tokens += doc_terms
                 total_num_afinn += doc_afinn
 
-                self.stats[pages][result[url]] = {
-                    total_tokens: len(result[content]),
-                    total_afinn: afinn.score(" ".join(result[content]))
+                self.stats[PAGES][result[URL]] = {
+                    TOTAL_TOKENS: len(result[CONTENT]),
+                    TOTAL_AFINN: afinn.score(" ".join(result[CONTENT]))
                 }
 
-        self.stats[totals][total_documents] = len(self.stats[pages])
-        self.stats[totals][total_tokens] = total_num_tokens
-        self.stats[totals][avg_tokens] = total_num_tokens / len(self.stats[pages])
-        self.stats[totals][total_afinn] = total_num_afinn
-        self.stats[totals][avg_afinn] = total_num_afinn / len(self.stats[pages])
+        self.stats[TOTALS][TOTAL_DOCUMENTS] = len(self.stats[PAGES])
+        self.stats[TOTALS][TOTAL_TOKENS] = total_num_tokens
+        self.stats[TOTALS][AVG_TOKENS] = total_num_tokens / len(self.stats[PAGES])
+        self.stats[TOTALS][TOTAL_AFINN] = total_num_afinn
+        self.stats[TOTALS][AVG_AFINN] = total_num_afinn / len(self.stats[PAGES])
 
         self.write_to_file(self.stats)
 
@@ -65,16 +65,16 @@ class DocumentParser:
 
         with open(self.stats_file, "w", encoding="utf-8") as stats_file:
 
-            for page, page_info in stats[pages].items():
+            for page, page_info in stats[PAGES].items():
 
-                total_num_tokens += page_info[total_tokens]
-                total_num_afinn += page_info[total_afinn]
+                total_num_tokens += page_info[TOTAL_TOKENS]
+                total_num_afinn += page_info[TOTAL_AFINN]
 
-                stats_file.write("{} {} {}\n".format(page, page_info[total_tokens], page_info[total_afinn]))
+                stats_file.write("{} {} {}\n".format(page, page_info[TOTAL_TOKENS], page_info[TOTAL_AFINN]))
 
             stats_file.write(
                 "\n{} {} document(s): {} total tokens, {} average tokens, {} total Afinn score, {} average Afinn score\n"
-                .format(self.summary, len(stats[pages]), total_num_tokens, round(total_num_tokens / len(stats[pages]), 3), total_num_afinn, round(total_num_afinn / len(stats[pages]), 3))
+                .format(self.summary, len(stats[PAGES]), total_num_tokens, round(total_num_tokens / len(stats[PAGES]), 3), total_num_afinn, round(total_num_afinn / len(stats[PAGES]), 3))
             )
 
         print("Document stats available at {}, showcasing:\n\t"
@@ -98,7 +98,7 @@ class DocumentParser:
         :return: statistics dictionary of documents
         """
 
-        stats = {pages: {}, totals: {}}
+        stats = {PAGES: {}, TOTALS: {}}
 
         with open(DocumentParser.stats_file) as stats_file:
 
@@ -110,14 +110,14 @@ class DocumentParser:
                     continue
 
                 if elements[0] == DocumentParser.summary:
-                    stats[totals][total_documents] = int(elements[1])
-                    stats[totals][total_tokens] = int(elements[3])
-                    stats[totals][avg_tokens] = float(elements[6])
-                    stats[totals][total_afinn] = float(elements[9])
-                    stats[totals][avg_afinn] = float(elements[13])
+                    stats[TOTALS][TOTAL_DOCUMENTS] = int(elements[1])
+                    stats[TOTALS][TOTAL_TOKENS] = int(elements[3])
+                    stats[TOTALS][AVG_TOKENS] = float(elements[6])
+                    stats[TOTALS][TOTAL_AFINN] = float(elements[9])
+                    stats[TOTALS][AVG_AFINN] = float(elements[13])
                 else:
-                    stats[pages][elements[0]] = {}
-                    stats[pages][elements[0]][total_tokens] = int(elements[1])
-                    stats[pages][elements[0]][total_afinn] = float(elements[2])
+                    stats[PAGES][elements[0]] = {}
+                    stats[PAGES][elements[0]][TOTAL_TOKENS] = int(elements[1])
+                    stats[PAGES][elements[0]][TOTAL_AFINN] = float(elements[2])
 
         return stats
