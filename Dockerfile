@@ -1,9 +1,9 @@
 FROM python:3
 
-RUN mkdir -p /usr/app
-WORKDIR /usr/app
+RUN mkdir -p /usr/src
+WORKDIR /usr/src
 
-COPY requirements.txt /usr/app
+COPY requirements.txt /usr/src
 
 RUN pip install --no-cache-dir -r requirements.txt && \
     python -m nltk.downloader punkt && \
@@ -17,7 +17,7 @@ RUN echo "alias ..='cd ..'" >> ~/.bashrc && \
     echo "alias ll='ls -ltr'" >> ~/.bashrc && \
     echo "alias cl='clear'" >> ~/.bashrc
 
-COPY src /usr/app/src
-WORKDIR /usr/app/src
+COPY src /usr/src/app
+WORKDIR /usr/src/app
 
 CMD ["bash"]

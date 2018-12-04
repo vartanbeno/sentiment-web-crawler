@@ -61,6 +61,10 @@ python main.py [-skip|--skip-crawl]
 - **Roger Shubho Madhu** - *ID:* 40076461
 - **Vartan Benohanian** - *ID:* 27492049
 
+## Report
+
+The project report, which includes more detailed specifications, as well as sample runs of the application, can be viewed [here](Project%20Report.pdf).
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
