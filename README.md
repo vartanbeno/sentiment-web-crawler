@@ -32,7 +32,7 @@ This will take you to an interactive Bash terminal, from which you can [run](#ru
 
 ### Running
 
-The file to run is in the root directory of the project.
+The file to run is in the `src/` directory.
 
 ```
 python main.py [-url|--start-url <"START_URL">]
