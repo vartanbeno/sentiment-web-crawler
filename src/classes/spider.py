@@ -35,6 +35,8 @@ class ConcordiaSpider(CrawlSpider):
 
     scraped_links = []
 
+    remove_stopwords = False
+
     def parse_item(self, response):
         """
         This method parses the response object.
@@ -52,10 +54,10 @@ class ConcordiaSpider(CrawlSpider):
         content = []
 
         title = response.xpath("//title//text()").extract_first()
-        content.extend(clean_terms(title))
+        content.extend(clean_terms(title, self.remove_stopwords))
 
         for text in response.xpath(self.tags).extract():
-            content.extend(clean_terms(text))
+            content.extend(clean_terms(text, self.remove_stopwords))
 
         yield {
             "url": url,
@@ -87,7 +89,7 @@ class ConcordiaSpider(CrawlSpider):
             }
         })
 
-    def crawl(self, start_url="https://www.concordia.ca/about.html", obey_robots=True, max=10):
+    def crawl(self, start_url="https://www.concordia.ca/about.html", obey_robots=True, max=10, remove_stopwords=False):
         """
         First, we define the start URL of the crawler by appending it to its start_urls attribute, which is currently
         just an empty list.
@@ -101,9 +103,11 @@ class ConcordiaSpider(CrawlSpider):
         :param start_url: URL the crawler will start scraping links from
         :param obey_robots: whether or not the crawler will obey websites' robots.txt
         :param max: maximum number of pages to be crawled
+        :param remove_stopwords: whether or not stopwords will be removed from scraped content
         :return: None
         """
         ConcordiaSpider.start_urls = [start_url]
+        ConcordiaSpider.remove_stopwords = remove_stopwords
 
         process = ConcordiaSpider.get_process()
         process.settings.set("ROBOTSTXT_OBEY", obey_robots)

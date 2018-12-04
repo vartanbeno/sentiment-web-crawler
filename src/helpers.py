@@ -16,15 +16,19 @@ log10 = log10
 sqrt = sqrt
 
 
-def clean_terms(text):
+def clean_terms(text, remove_stopwords=False):
     """
     :param text: string of text (could be one word, a sentence, a whole article, etc.) to be tokenized and casefolded
+    :param remove_stopwords: whether or not stopwords will be removed from the string of text
     :return: list of terms without strings that are just punctuation, and without stopwords
     """
     terms = word_tokenize(text)
     terms = [term.casefold() for term in terms]
     """ includes the Em dash (a long hyphen), another dash, a kind of single/double quotes, and other punctuation """
-    return [term for term in terms if not re.fullmatch("[" + string.punctuation + "–—‘’“”…•‹›«»]+", term)]
+    terms = [term for term in terms if not re.fullmatch("[" + string.punctuation + "–—‘’“”…•‹›«»]+", term)]
+    if remove_stopwords:
+        terms = [term for term in terms if term not in stopwords]
+    return terms
 
 
 SENTIMENT = "sentiment"

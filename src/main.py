@@ -14,7 +14,8 @@ parser = argparse.ArgumentParser(description="Configure crawler's process.")
 parser.add_argument("-url", "--start-url", type=str, help="page where we start crawling for links", default="https://www.concordia.ca/about.html")
 parser.add_argument("-ign", "--ignore-robots", action="store_true", help="ignore websites' robots.txt", default=False)
 parser.add_argument("-m", "--max", type=int, help="maximum number of pages to crawl", default=10)
-parser.add_argument("-skip", "--skip-crawl", action="store_true", help="skip crawler, build index and stats from current results.json", default=False)
+parser.add_argument("-rs", "--remove-stopwords", action="store_true", help="remove stopwords from scraped content and queries", default=False)
+parser.add_argument("-skip", "--skip-crawl", action="store_true", help="skip crawler, build index and stats from current files", default=False)
 
 args = parser.parse_args()
 
@@ -24,7 +25,7 @@ def delete_results():
         os.remove(output_file)
 
 
-def run_spider():
+def run_spider(remove_stopwords=False):
 
     """
     First, delete the results.json file if it exists. The crawler will recreate it and populate it with data.
@@ -36,7 +37,12 @@ def run_spider():
     delete_results()
 
     spider = ConcordiaSpider()
-    spider.crawl(start_url=args.start_url, obey_robots=not args.ignore_robots, max=args.max)
+    spider.crawl(
+        start_url=args.start_url,
+        obey_robots=not args.ignore_robots,
+        max=args.max,
+        remove_stopwords=remove_stopwords
+    )
 
     document_parser = DocumentParser(output_file)
     document_parser.construct_stats()
@@ -48,21 +54,21 @@ def run_spider():
 
     index = index_builder.get_index()
 
-    conduct_queries(index, stats)
+    conduct_queries(index, stats, remove_stopwords)
 
 
-def build_stats_and_index():
+def build_stats_and_index(remove_stopwords=False):
 
     stats = DocumentParser.build_stats_from_file()
     index = IndexBuilder.build_index_from_file()
 
-    conduct_queries(index, stats)
+    conduct_queries(index, stats, remove_stopwords)
 
 
-def conduct_queries(index, stats):
+def conduct_queries(index, stats, remove_stopwords=False):
 
-    and_query = AndQuery(index, stats)
-    or_query = OrQuery(index, stats)
+    and_query = AndQuery(index, stats, remove_stopwords)
+    or_query = OrQuery(index, stats, remove_stopwords)
 
     while True:
         user_input = input("Would you like to conduct an AND query or an OR query? Hit enter for no. [and/or] ")
@@ -80,7 +86,7 @@ if __name__ == '__main__':
 
     if not args.skip_crawl:
 
-        run_spider()
+        run_spider(args.remove_stopwords)
 
     else:
 
@@ -95,6 +101,6 @@ if __name__ == '__main__':
 
         else:
 
-            build_stats_and_index()
+            build_stats_and_index(args.remove_stopwords)
 
     print("Bye!")

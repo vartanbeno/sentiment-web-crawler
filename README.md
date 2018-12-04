@@ -35,9 +35,10 @@ This will take you to an interactive Bash terminal, from which you can [run](#ru
 The file to run is in the root directory of the project.
 
 ```
-python main.py [-url "START_URL"]
-               [-ign]
-               [-m MAX]
+python main.py [-url|--start-url <"START_URL">]
+               [-ign|--ignore-robots]
+               [-m|--max <MAX>]
+               [-rs|--remove-stopwords]
 ```
 
 The arguments are the following:
@@ -45,12 +46,13 @@ The arguments are the following:
 1. `-url` or `--start-url`: URL the crawler will begin scraping links from. Surround it with quotes in the command line for best results. Default is the [about page](https://www.concordia.ca/about.html) of the Concordia University website.
 2. `-ign` or `--ignore-robots`: websites' robots.txt will be ignored. Default is false.
 3. `-m` or `--max`: maximum number of links to scrape. Default is 10.
-4. `-skip` or `--skip-crawl`: spider won't be run, and index/stats will be built from current results file. Default is false.
+4. `-rs` or `--remove-stopwords`: stopwords will be removed from the index and ignored in queries. Default is false.
+5. `-skip` or `--skip-crawl`: spider won't crawl; index/stats will be built from current files. Default is false.
 
 If you intend to use that last one, no need to specify the others. You would obviously need to have run the crawler first, to generate a data set. Simply run:
 
 ```
-python main.py -skip
+python main.py [-skip|--skip-crawl]
 ```
 
 ## Authors
