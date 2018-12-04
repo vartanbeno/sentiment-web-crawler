@@ -1,9 +1,7 @@
 from classes.spider import ConcordiaSpider
 from classes.index_builder import IndexBuilder
 from classes.document_parser import DocumentParser
-from classes.query import Query
-from classes.and_query import AndQuery
-from classes.or_query import OrQuery
+from classes.query import Query, AndQuery, OrQuery
 
 import os
 import argparse
