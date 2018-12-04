@@ -11,7 +11,7 @@ output_file = ConcordiaSpider.get_process().settings.get("FEED_URI")
 
 parser = argparse.ArgumentParser(description="Configure crawler's process.")
 
-parser.add_argument("-url", "--start-url", type=str, help="page where we start crawling for links", default="https://www.concordia.ca/about.html")
+parser.add_argument("-url", "--start-url", type=str, help="page where we start crawling for links", default="https://en.wikipedia.org/wiki/LeBron_James")
 parser.add_argument("-ign", "--ignore-robots", action="store_true", help="ignore websites' robots.txt", default=False)
 parser.add_argument("-m", "--max", type=int, help="maximum number of pages to crawl", default=10)
 parser.add_argument("-rs", "--remove-stopwords", action="store_true", help="remove stopwords from scraped content and queries", default=False)

@@ -16,8 +16,9 @@ class ConcordiaSpider(CrawlSpider):
     rules = (
         Rule(
             LinkExtractor(
+                allow_domains=["en.wikipedia.org"],
                 deny_domains=["facebook.com", "twitter.com", "youtube.com", "google.com", "stm.info", "apple.com"],
-                deny=[".*/fr/.*", ".*concordia.ca/maps/.*"]
+                deny=[".*/fr/.*", ".*concordia.ca/maps/.*", ".*wikipedia.org/wiki/.*:.*"]
             ),
             callback="parse_item",
             follow=True
@@ -66,7 +67,7 @@ class ConcordiaSpider(CrawlSpider):
             "content": content
         }
 
-    parse_start_url = parse_item
+    # parse_start_url = parse_item
 
     @staticmethod
     def get_process():
@@ -91,7 +92,7 @@ class ConcordiaSpider(CrawlSpider):
             }
         })
 
-    def crawl(self, start_url="https://www.concordia.ca/about.html", obey_robots=True, max=10, remove_stopwords=False):
+    def crawl(self, start_url="https://en.wikipedia.org/wiki/LeBron_James", obey_robots=True, max=10, remove_stopwords=False):
         """
         First, we define the start URL of the crawler by appending it to its start_urls attribute, which is currently
         just an empty list.
