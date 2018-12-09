@@ -13,16 +13,6 @@ class ConcordiaSpider(CrawlSpider):
     This means the crawler will go from one link, to another from that one, to another from that one, etc.
     """
     name = "ir"
-    rules = (
-        Rule(
-            LinkExtractor(
-                deny_domains=["facebook.com", "twitter.com", "youtube.com", "google.com", "stm.info", "apple.com"],
-                deny=[".*/fr/.*", ".*concordia.ca/maps/.*"]
-            ),
-            callback="parse_item",
-            follow=True
-        ),
-    )
 
     # xpath expression which will be used to get relevant tags' text content in page's body
     # exclude script/style tags, they're of no interest to the user
@@ -91,7 +81,14 @@ class ConcordiaSpider(CrawlSpider):
             }
         })
 
-    def crawl(self, start_url="https://www.concordia.ca/about.html", obey_robots=True, max=10, remove_stopwords=False):
+    def crawl(
+            self,
+            start_url="https://www.concordia.ca/about.html",
+            obey_robots=True,
+            follow=True,
+            max=10,
+            remove_stopwords=False
+    ):
         """
         First, we define the start URL of the crawler by appending it to its start_urls attribute, which is currently
         just an empty list.
@@ -104,12 +101,24 @@ class ConcordiaSpider(CrawlSpider):
 
         :param start_url: URL the crawler will start scraping links from
         :param obey_robots: whether or not the crawler will obey websites' robots.txt
+        :param follow: whether or not the crawler will follow extracted links
         :param max: maximum number of pages to be crawled
         :param remove_stopwords: whether or not stopwords will be removed from scraped content
         :return: None
         """
         ConcordiaSpider.start_urls = [start_url]
         ConcordiaSpider.remove_stopwords = remove_stopwords
+
+        ConcordiaSpider.rules = (
+            Rule(
+                LinkExtractor(
+                    deny_domains=["facebook.com", "twitter.com", "youtube.com", "google.com", "stm.info", "apple.com"],
+                    deny=[".*/fr/.*", ".*concordia.ca/maps/.*"]
+                ),
+                callback="parse_item",
+                follow=follow
+            ),
+        )
 
         process = ConcordiaSpider.get_process()
         process.settings.set("ROBOTSTXT_OBEY", obey_robots)

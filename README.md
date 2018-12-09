@@ -39,12 +39,14 @@ python main.py [-url|--start-url <"START_URL">]
                [-ign|--ignore-robots]
                [-m|--max <MAX>]
                [-rs|--remove-stopwords]
+               [-nf|--no-follow]
 
 optional arguments:
     -url, --start-url               set URL the crawler will start from, (default https://www.concordia.ca/about.html)
     -ign, --ignore-robots           the crawler will not respect robot exclusion
     -m, --max                       set maximum number of pages to scrape (default 10)
     -rs, --remove-stopwords         remove stopwords from the index
+    -nf, --no-follow                do not follow extracted links
     -skip, --skip-crawl             skip crawl, use index from most recent run
 ```
 

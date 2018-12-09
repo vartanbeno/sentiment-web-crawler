@@ -15,6 +15,7 @@ parser.add_argument("-url", "--start-url", type=str, help="page where we start c
 parser.add_argument("-ign", "--ignore-robots", action="store_true", help="ignore websites' robots.txt", default=False)
 parser.add_argument("-m", "--max", type=int, help="maximum number of pages to crawl", default=10)
 parser.add_argument("-rs", "--remove-stopwords", action="store_true", help="remove stopwords from scraped content and queries", default=False)
+parser.add_argument("-nf", "--no-follow", action="store_false", help="do not follow extracted links", default=True)
 parser.add_argument("-skip", "--skip-crawl", action="store_true", help="skip crawler, build index and stats from current files", default=False)
 
 args = parser.parse_args()
@@ -40,6 +41,7 @@ def run_spider(remove_stopwords=False):
     spider.crawl(
         start_url=args.start_url,
         obey_robots=not args.ignore_robots,
+        follow=args.no_follow,
         max=args.max,
         remove_stopwords=remove_stopwords
     )
