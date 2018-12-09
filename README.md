@@ -40,6 +40,7 @@ python main.py [-url|--start-url <"START_URL">]
                [-m|--max <MAX>]
                [-rs|--remove-stopwords]
                [-nf|--no-follow]
+               [-wiki|--wikipedia-only]
 
 optional arguments:
     -url, --start-url               set URL the crawler will start from, (default https://www.concordia.ca/about.html)
@@ -47,6 +48,7 @@ optional arguments:
     -m, --max                       set maximum number of pages to scrape (default 10)
     -rs, --remove-stopwords         remove stopwords from the index
     -nf, --no-follow                do not follow extracted links
+    -wiki, --wikipedia-only         the crawler will only crawl English Wikipedia articles
     -skip, --skip-crawl             skip crawl, use index from most recent run
 ```
 

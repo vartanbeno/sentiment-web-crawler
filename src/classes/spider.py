@@ -38,9 +38,11 @@ class ConcordiaSpider(CrawlSpider):
         :param response: response containing the web page's information.
         :return: None
         """
-        self.logger.info("Currently scraping: {}".format(response.url))
-
         url = response.url
+        if url in self.scraped_links:
+            return
+
+        self.logger.info("Currently scraping: {}".format(url))
         self.scraped_links.append(url)
 
         content = []
@@ -85,6 +87,7 @@ class ConcordiaSpider(CrawlSpider):
             self,
             start_url="https://www.concordia.ca/about.html",
             obey_robots=True,
+            wikipedia_only=False,
             follow=True,
             max=10,
             remove_stopwords=False
@@ -101,6 +104,7 @@ class ConcordiaSpider(CrawlSpider):
 
         :param start_url: URL the crawler will start scraping links from
         :param obey_robots: whether or not the crawler will obey websites' robots.txt
+        :param wikipedia_only: if True, then the crawler will only crawl English Wikipedia articles
         :param follow: whether or not the crawler will follow extracted links
         :param max: maximum number of pages to be crawled
         :param remove_stopwords: whether or not stopwords will be removed from scraped content
@@ -109,12 +113,20 @@ class ConcordiaSpider(CrawlSpider):
         ConcordiaSpider.start_urls = [start_url]
         ConcordiaSpider.remove_stopwords = remove_stopwords
 
+        if wikipedia_only:
+            link_extractor = LinkExtractor(
+                allow_domains=["en.wikipedia.org"],
+                deny=[".*wikipedia.org/wiki/.*:.*"]
+            )
+        else:
+            link_extractor = LinkExtractor(
+                deny_domains=["facebook.com", "twitter.com", "youtube.com", "google.com", "stm.info", "apple.com"],
+                deny=[".*/fr/.*", ".*concordia.ca/maps/.*"]
+            )
+
         ConcordiaSpider.rules = (
             Rule(
-                LinkExtractor(
-                    deny_domains=["facebook.com", "twitter.com", "youtube.com", "google.com", "stm.info", "apple.com"],
-                    deny=[".*/fr/.*", ".*concordia.ca/maps/.*"]
-                ),
+                link_extractor,
                 callback="parse_item",
                 follow=follow
             ),
